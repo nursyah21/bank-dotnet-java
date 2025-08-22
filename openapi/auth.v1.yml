@@ -1,0 +1,308 @@
+openapi: 3.0.0
+info:
+  title: Authentication Management API v1
+  description: An API for managing user authentication, including login, registration, and password management.
+  version: 1.0.0
+
+servers:
+  - url: /api/v1/auth
+    description: Base URL for all authentication endpoints.
+
+paths:
+  /login:
+    post:
+      summary: User Login
+      description: Authenticates a user with a username and password.
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+
+  /register:
+    post:
+      summary: Register a new user
+      description: Creates a new user account.
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegistration'
+      responses:
+        '201':
+          description: User successfully registered
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+
+  /logout:
+    get:
+      summary: User Logout
+      description: Ends the current user session. Requires a JWT token in the header.
+      tags:
+        - Authentication
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+        '401':
+          description: Unauthorized or invalid token
+
+  /me:
+    get:
+      summary: Get user profile
+      description: Retrieves the profile details of the currently logged-in user. Requires a JWT token in the header.
+      tags:
+        - User Profile
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User profile details successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  username:
+                    type: string
+                  email:
+                    type: string
+                    format: email
+                  birthdate:
+                    type: string
+                    format: date
+        '401':
+          description: Unauthorized or invalid token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+
+  /reset-password:
+    post:
+      summary: Request password reset link
+      description: Sends a link to the user's email to reset their password.
+      tags:
+        - Password Management
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        '201':
+          description: Password reset link successfully sent
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+    put:
+      summary: Reset password
+      description: Sets a new password using a reset token.
+      tags:
+        - Password Management
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - tokenReset
+                - password
+              properties:
+                tokenReset:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Password successfully reset
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  secret:
+                    type: string
+        '400':
+          description: Invalid request, token is missing or invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+
+  /reset-password:
+    get:
+      summary: Validate password reset token
+      description: Verifies the validity of a password reset token.
+      tags:
+        - Password Management
+      parameters:
+        - in: query
+          name: token
+          schema:
+            type: string
+          required: true
+          description: The password reset token received from the email.
+      responses:
+        '200':
+          description: Token is valid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  email:
+                    type: string
+                    format: email
+                  tokenReset:
+                    type: string
+        '400':
+          description: Invalid or expired token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+
+components:
+  schemas:
+    UserRegistration:
+      type: object
+      required:
+        - username
+        - email
+        - password
+        - birthdate
+      properties:
+        username:
+          type: string
+          minLength: 4
+          maxLength: 20
+          pattern: '^[a-zA-Z0-9_]+$'
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+        birthdate:
+          type: string
+          format: date
+        no_id:
+          type: string
+          minLength: 10
+          maxLength: 10
+          pattern: '^[0-9]+$'
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
