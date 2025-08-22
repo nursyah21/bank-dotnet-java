@@ -133,6 +133,9 @@ paths:
                   birthdate:
                     type: string
                     format: date
+                  role:
+                    type: string
+                    description: The role of the user (e.g., admin, user).
         '401':
           description: Unauthorized or invalid token
           content:
@@ -276,6 +279,7 @@ components:
         - email
         - password
         - birthdate
+        - role
       properties:
         username:
           type: string
@@ -296,10 +300,14 @@ components:
           minLength: 10
           maxLength: 10
           pattern: '^[0-9]+$'
+          description: 10-digit number for identification.
         id:
           type: string
           format: uuid
           readOnly: true
+        role:
+          type: string
+          description: This can be 'admin', 'user', or another role.
 
   securitySchemes:
     bearerAuth:

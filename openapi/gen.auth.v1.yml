@@ -1,5 +1,6 @@
 # generate openapi 3.0.0 auth management v1
-# this is an prototype to generate an openapi with help llm
+# this is an prototype to generate an openapi with help llm tested on gemini
+# for validation please ensure you separate length from regex
 
 schema:
     - username:
@@ -17,6 +18,8 @@ schema:
         - only number
     - id:
         - uuid generate
+    - role:
+        - this is can be admin, user or another
 
 base_url: /api/v1/auth
 
@@ -55,6 +58,7 @@ path:
             - username: string
             - email: string
             - birthdate: string
+            - role: string
         - 401:
             - success: false
             - message: string
