@@ -7,7 +7,7 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Index() {
-  
+
   return <div className="center">
     ini di index
   </div>;

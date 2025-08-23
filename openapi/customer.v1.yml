@@ -3,6 +3,7 @@ info:
   title: Customer Management API
   version: v1
 
+
 components:
   schemas:
     username:

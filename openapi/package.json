@@ -1,0 +1,16 @@
+{
+  "name": "openapi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "generate:auth": "openapi-generator-cli generate -i auth.v1.yml -g typescript-fetch -o ../sdk/auth-api"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.23.0"
+  }
+}
