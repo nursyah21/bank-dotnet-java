@@ -9,6 +9,7 @@ While this is a basic bank simulation, its core functionality (Auth + CRUD) is b
 Here's a quick overview of the key decisions behind the project:
 
 - **Dotnet:** The backend uses Dotnet, a robust alternative to Java, widely adopted in enterprise settings.
+- **React:** The Frontend uses React, because is more popular and good for create ui.
 - **PostgreSQL:** Chosen for its reliability and strong support for write-heavy operations, which are crucial for a banking system.
 - **Modular Architecture:** The folder structure is feature-based, promoting team collaboration and maintainability.
 - **Test-Driven Development (TDD):** This methodology was used throughout development to ensure an error-free and stable application.
@@ -32,14 +33,14 @@ Here's a quick overview of the key decisions behind the project:
     - **Registration:** Available for new Customer accounts.
     - **Password Reset:** Allows both Admin and Customer roles to reset passwords.
 
-- **User Management (Role: Customer)**
-    - **Funds Transfer:** Send money to another user (minimum transfer: 10).
+- **Customer Management (Role: Customer)**
+    - **Funds Transfer:** Send money to another customer (minimum transfer: 10).
     - **Withdrawal:** Withdraw money from an account (minimum withdrawal: 10).
-    - **Transaction History:** View all transactions with full-field search, pagination (25 items per page), sorting by creation date, and filtering by type.
+    - **Transaction History:** View all transactions with full-field search, pagination (25 items per page), sorting by created at, and filtering by type.
 
 - **Admin Management (Role: Admin)**
-    - **User & Transaction Viewing:** See all user profiles and transactions with full-field search, pagination (500 items per page), and sorting.
-    - **Funds Management:** Top up user balances and transfer money between users (minimum: 10).
+    - **Customer & Transaction Viewing:** See all customer profiles and transactions with full-field search, pagination (500 items per page), and sorting.
+    - **Funds Management:** Top up customer balances (minimum: 10).
 
 
 ## [Security](#security)
@@ -57,8 +58,9 @@ The application was built with a strong focus on security, implementing multiple
 - **UUIDs for IDs:** Prevents **enumeration attacks** by making IDs non-sequential.
 
 
-## [UI](#ui)
+## [Frontend / UI](#frontend--ui)
 
+- **Use Client Side Rendering:** Because this app didnt need **SEO**, use client side is preferred for better performance
 - **Clean & Familiar Design:** The UI is designed to be clean and familiar, inspired by Microsoft products like Word and Excel.
 - **Navigation:** Uses a top navigation bar instead of a sidebar for a cleaner layout.
 
@@ -69,3 +71,8 @@ The application was built with a strong focus on security, implementing multiple
 - **Secure Deployment:** The system is architected with a secure deployment model:
     - Only the frontend is exposed to the public.
     - The backend and database are accessible exclusively within the internal network.
+
+## [Limitation For Speed Development](#limitation-for-speed-development)
+
+- No refresh tokens are used, instead, there's a blacklist token used to keep JWTs secure, and the JWT time limit is only 1 hour.
+- No PIN is required when performing mutation actions.

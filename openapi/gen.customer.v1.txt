@@ -1,0 +1,57 @@
+# generate openapi 3.0.0 customer management v1
+# this is an prototype to generate an openapi
+
+schema:
+    - search:
+        - it can fullfield search in transaction which is no_id, amount, type, time
+    - page:
+        - for pagination by default is 25
+    - type:
+        - value is receive, send, and withdrawal 
+    - sort:
+        - for sorting by created at
+        - value is asc and desc, default desc
+
+base_url: /api/v1/customer
+
+path:
+    - /transaction
+        - method: get list data transaction with query paramater
+            - description: get all 
+            - header: jwt-token
+            - query 
+                - search: string 
+                - page: number
+                - type: string
+                - sort: string
+            - 200:
+                - success: true
+                - data: array
+            - 400:
+                - success: false
+                - message: string
+
+    - /send
+        - method: post
+            - description: for send money to another customer
+            - header: jwt-token
+            - body 
+                - username: string 
+                - password: string
+            - 200:
+                - success: true
+            - 400:
+                - success: false
+                - message: string
+
+    - /withdraw
+        - method: post
+            - description: for withdraw your money
+            - header: jwt-token
+            - body
+                - amount: number
+            - 201:
+                - success: true
+            - 400:
+                - success: false
+                - message: string
