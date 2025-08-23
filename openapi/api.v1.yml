@@ -1,0 +1,372 @@
+openapi: 3.0.0
+info:
+  title: Bank Simulation API
+  version: v1
+  description: API for managing authentication, customer, and admin operations for a bank simulation.
+
+servers:
+  - url: /api/v1
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: jwt-token
+
+  schemas:
+    # Reusable Schemas for Entities and Data Types
+    UserId:
+      type: string
+      example: '1234567890'
+      pattern: '^\\d{10}$'
+      description: A unique 10-digit customer or user ID.
+    Password:
+      type: string
+      minLength: 8
+      pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^a-zA-Z0-9]).+$'
+      description: Requires at least 8 characters with a mix of lowercase, uppercase, numbers, and symbols.
+    Username:
+      type: string
+      minLength: 4
+      maxLength: 20
+      pattern: '^[a-zA-Z0-9_]+$'
+    Email:
+      type: string
+      format: email
+    BirthDate:
+      type: string
+      format: date
+      example: '2000-12-30'
+      pattern: '^\\d{4}-\\d{2}-\\d{2}$'
+    Amount:
+      type: number
+      minimum: 10
+      format: float
+      description: The amount of money, with a minimum of 10.
+    Role:
+      type: string
+      enum: [admin, user, customer]
+    UUID:
+      type: string
+      format: uuid
+    Token:
+      type: string
+      description: A JWT token for authentication or a temporary token for password reset.
+    UserResponse:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/UUID'
+        no_id:
+          $ref: '#/components/schemas/UserId'
+        username:
+          $ref: '#/components/schemas/Username'
+        email:
+          $ref: '#/components/schemas/Email'
+        birth_date:
+          $ref: '#/components/schemas/BirthDate'
+        role:
+          $ref: '#/components/schemas/Role'
+        balance:
+          $ref: '#/components/schemas/Amount'
+
+  parameters:
+    # Reusable Parameters for Query Strings
+    SearchParam:
+      name: search
+      in: query
+      description: Full-field search.
+      required: false
+      schema:
+        type: string
+    PageParam:
+      name: page
+      in: query
+      description: Page number for pagination. By default, it shows 25 items per page.
+      required: false
+      schema:
+        type: integer
+        format: int32
+        default: 1
+    SortParam:
+      name: sort
+      in: query
+      description: Sort order for transactions by created_at.
+      required: false
+      schema:
+        type: string
+        enum:
+          - asc
+          - desc
+        default: desc
+    TypeParam:
+      name: type
+      in: query
+      description: Filter transactions by type.
+      required: false
+      schema:
+        type: string
+        enum:
+          - received
+          - send
+          - withdrawal
+    ResetPasswordToken:
+      name: token_reset_password
+      in: query
+      required: true
+      schema:
+        $ref: '#/components/schemas/Token'
+  
+paths:
+  # Auth Endpoints
+  /auth/login:
+    post:
+      description: Return JWT token (1 hour) and set as HttpOnly and SameSite=Lax cookie.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  $ref: '#/components/schemas/Username'
+                password:
+                  $ref: '#/components/schemas/Password'
+      responses:
+        '200':
+          description: Login success.
+        '400':
+          description: Invalid credentials.
+  
+  /auth/register:
+    post:
+      description: Register new user with the 'customer' role.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - email
+                - password
+                - birthdate
+              properties:
+                username:
+                  $ref: '#/components/schemas/Username'
+                email:
+                  $ref: '#/components/schemas/Email'
+                password:
+                  $ref: '#/components/schemas/Password'
+                birthdate:
+                  $ref: '#/components/schemas/BirthDate'
+      responses:
+        '201':
+          description: Register success.
+        '400':
+          description: Invalid input.
+
+  /auth/logout:
+    get:
+      description: Invalidate JWT token.
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Logout success.
+        '401':
+          description: Token missing or invalid.
+  
+  /auth/me:
+    get:
+      description: Check if JWT token is still valid and get authenticated user information.
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Authenticated user info.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '401':
+          description: Token missing or invalid.
+  
+  /auth/reset-password:
+    post:
+      description: Request a password reset link via email.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  $ref: '#/components/schemas/Email'
+      responses:
+        '201':
+          description: Link sent.
+        '400':
+          description: Invalid email.
+    
+    get:
+      description: Validate the reset password token from the email link.
+      parameters:
+        - $ref: '#/components/parameters/ResetPasswordToken'
+      responses:
+        '200':
+          description: Token valid.
+        '400':
+          description: Token invalid.
+    
+    put:
+      description: Change password using a reset token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - tokenReset
+                - password
+              properties:
+                tokenReset:
+                  $ref: '#/components/schemas/Token'
+                password:
+                  $ref: '#/components/schemas/Password'
+      responses:
+        '200':
+          description: Password changed.
+        '400':
+          description: Invalid token or password.
+
+  # Admin Endpoints
+  /admin/top-up:
+    post:
+      description: Top up a customer's balance. Minimum top-up amount is 10.
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - customer_id
+                - amount
+              properties:
+                customer_id:
+                  $ref: '#/components/schemas/UserId'
+                amount:
+                  $ref: '#/components/schemas/Amount'
+      responses:
+        '200':
+          description: Top-up successful.
+        '400':
+          description: Invalid input.
+          
+  /admin/customer:
+    get:
+      description: View customers with filtering, sorting, and pagination.
+      security:
+        - cookieAuth: []
+      parameters:
+        - $ref: '#/components/parameters/SearchParam'
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/SortParam'
+      responses:
+        '200':
+          description: Get data success.
+        '400':
+          description: Invalid input.
+
+  /admin/transaction:
+    get:
+      description: View all transactions from all customers with filtering, sorting, and pagination.
+      security:
+        - cookieAuth: []
+      parameters:
+        - $ref: '#/components/parameters/SearchParam'
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/SortParam'
+        - $ref: '#/components/parameters/TypeParam'
+      responses:
+        '200':
+          description: Get data success.
+        '400':
+          description: Invalid input.
+
+  # Customer Endpoints
+  /customer/send:
+    post:
+      description: Send money to another customer. Minimum transfer amount is 10.
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - receiver_id
+                - amount
+              properties:
+                receiver_id:
+                  $ref: '#/components/schemas/UserId'
+                amount:
+                  $ref: '#/components/schemas/Amount'
+      responses:
+        '200':
+          description: Send success.
+        '400':
+          description: Invalid input.
+  
+  /customer/withdrawal:
+    post:
+      description: Withdraw money from an account. Minimum withdrawal amount is 10.
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - amount
+              properties:
+                amount:
+                  $ref: '#/components/schemas/Amount'
+      responses:
+        '200':
+          description: Withdrawal successful.
+        '400':
+          description: Invalid input.
+    
+  /customer/transaction:
+    get:
+      description: View your own transactions with filtering, sorting, and pagination.
+      security:
+        - cookieAuth: []
+      parameters:
+        - $ref: '#/components/parameters/SearchParam'
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/SortParam'
+        - $ref: '#/components/parameters/TypeParam'
+      responses:
+        '200':
+          description: Get data success.
+        '400':
+          description: Invalid input.

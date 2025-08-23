@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "generate:auth": "openapi-generator-cli generate -i auth.v1.yml -g typescript-fetch -o ../sdk/auth-api"
+    "generate": "openapi-generator-cli generate -i api.v1.yml -g typescript-fetch -o ../sdk/api"
   },
   "keywords": [],
   "author": "",
