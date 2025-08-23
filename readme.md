@@ -74,5 +74,8 @@ The application was built with a strong focus on security, implementing multiple
 
 ## [Limitation For Speed Development](#limitation-for-speed-development)
 
+- To avoid over-engineering in this portfolio project, the database model is built strictly to the OpenAPI specification. As a result, certain enterprise features like soft deletes (`is_deleted`) are not universally present on all tables.
+- Data for frequent queries (e.g., user sessions) is not stored in an in-memory database like Redis. To prioritize simplicity and reduce infrastructure overhead, all data is stored and retrieved directly from PostgreSQL.
+- The password reset email endpoint does not have a brute-force check to simplify the implementation.
 - No refresh tokens are used, instead, there's a blacklist token used to keep JWTs secure, and the JWT time limit is only 1 hour.
 - No PIN is required when performing mutation actions.
