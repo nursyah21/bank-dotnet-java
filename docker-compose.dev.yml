@@ -1,0 +1,38 @@
+services:
+  postgres_db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: bank_simulation_dev_dotnet
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+  
+  postgres_db_audit:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: bank_simulation_audit_dev_dotnet
+    volumes:
+      - postgres_data_audit:/var/lib/postgresql/data
+    ports:
+      - 5433:5432
+
+  mailpit:
+    image: axllent/mailpit
+    restart: always
+    ports:
+      - 8025:8025
+      - 1025:1025
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: true
+      MP_SMTP_AUTH_ALLOW_INSECURE: true
+
+volumes:
+  postgres_data:
+  postgres_data_audit:
