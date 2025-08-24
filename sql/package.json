@@ -14,5 +14,8 @@
     "@types/bcrypt": "^6.0.0",
     "bcrypt": "^6.0.0",
     "postgres": "^3.4.7"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^10.0.0"
   }
 }
