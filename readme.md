@@ -9,7 +9,7 @@ While this is a basic bank simulation, its core functionality (Auth + CRUD) is b
 Here's a quick overview of the key decisions behind the project:
 
 - **Dotnet:** The backend uses Dotnet, a robust alternative to Java, widely adopted in enterprise settings.
-- **React:** The Frontend uses React, because is more popular and good for create ui.
+- **React:** The frontend uses React, a popular and efficient UI library. We chose React Router v7 in framework mode to avoid vendor lock-in and leverage the benefits of Client-Side Rendering (CSR) for better performance.
 - **PostgreSQL:** Chosen for its reliability and strong support for write-heavy operations, which are crucial for a banking system.
 - **Modular Architecture:** The folder structure is feature-based, promoting team collaboration and maintainability.
 - **Test-Driven Development (TDD):** This methodology was used throughout development to ensure an error-free and stable application.
@@ -19,7 +19,7 @@ Here's a quick overview of the key decisions behind the project:
 ## [Tech Stack](#tech-stack)
 
 - **Backend:** Dotnet 8
-- **Frontend:** React
+- **Frontend:** React + React Router V7 (Framework Mode)
 - **Database:** PostgreSQL
 - **Containerization:** Docker
 - **Testing:** K6 (Load Testing), Playwright (E2E Testing)
@@ -36,10 +36,10 @@ Here's a quick overview of the key decisions behind the project:
 - **Customer Management (Role: Customer)**
     - **Funds Transfer:** Send money to another customer (minimum transfer: 10).
     - **Withdrawal:** Withdraw money from an account (minimum withdrawal: 10).
-    - **Transaction History:** View all transactions with full-field search, pagination (25 items per page), sorting by created at, and filtering by type.
+    - **Transaction History:** View transactions with search feature, pagination (25 items per page), sorting by created at, and filtering by type.
 
 - **Admin Management (Role: Admin)**
-    - **Customer & Transaction Viewing:** See all customer profiles and transactions with full-field search, pagination (500 items per page), and sorting.
+    - **Customer & Transaction Viewing:** View customer profiles and transactions with search feature, pagination (500 items per page), and sorting.
     - **Funds Management:** Top up customer balances (minimum: 10).
 
 
@@ -56,6 +56,7 @@ The application was built with a strong focus on security, implementing multiple
 - **Bcrypt Password Hashing:** Offers an excellent balance between security and performance.
 - **JWT Bearer (HTTP Only with SameSite=Lax):** Mitigates **XSS** and **CSRF** attacks.
 - **UUIDs for IDs:** Prevents **enumeration attacks** by making IDs non-sequential.
+- **Logging For Mutation Actions:** For compliance audit.
 
 
 ## [Frontend / UI](#frontend--ui)
@@ -76,6 +77,6 @@ The application was built with a strong focus on security, implementing multiple
 
 - To avoid over-engineering in this portfolio project, the database model is built strictly to the OpenAPI specification. As a result, certain enterprise features like soft deletes (`is_deleted`) are not universally present on all tables.
 - Data for frequent queries (e.g., user sessions) is not stored in an in-memory database like Redis. To prioritize simplicity and reduce infrastructure overhead, all data is stored and retrieved directly from PostgreSQL.
-- The password reset email endpoint does not have a brute-force check to simplify the implementation.
 - No refresh tokens are used, instead, there's a blacklist token used to keep JWTs secure, and the JWT time limit is only 1 hour.
 - No PIN is required when performing mutation actions.
+- Search not use full-field search because we didnt use dedicated search, so we use exact match for search because we indexed the database

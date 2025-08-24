@@ -76,7 +76,7 @@ components:
     SearchParam:
       name: search
       in: query
-      description: Full-field search.
+      description: Search for exact matches on indexed fields like username, email, or user ID to ensure fast performance.
       required: false
       schema:
         type: string
