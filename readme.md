@@ -21,7 +21,7 @@ Here's a quick overview of the key decisions behind the project:
 - **Backend:** Dotnet 8
 - **Frontend:** React + React Router V7 (Framework Mode)
 - **Database:** PostgreSQL
-- **Database Migration:** **Flyway**
+- **Database Migration:** **Flyway** (For local development, custom scripts are used for ease of *debugging* and speed.)
 - **Containerization:** Docker
 - **Testing:** K6 (Load Testing), Playwright (E2E Testing)
 - **CI/CD:** Github Action
