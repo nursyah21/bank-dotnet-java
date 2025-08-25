@@ -25,6 +25,27 @@ BEGIN
 END;
 $$;
 
+-- sp promote to admin
+CREATE OR REPLACE PROCEDURE sp_promote_to_admin(
+    p_user_id UUID
+)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_admin_role_id INT;
+BEGIN
+    SELECT id INTO v_admin_role_id FROM roles WHERE name = 'admin';
+    
+    IF v_admin_role_id IS NOT NULL THEN
+        UPDATE user_roles
+        SET role_id = v_admin_role_id
+        WHERE user_id = p_user_id;
+    ELSE
+        RAISE EXCEPTION 'Admin role does not exist.';
+    END IF;
+END;
+$$;
+
 -- sp reset password user
 CREATE OR REPLACE PROCEDURE sp_reset_password_user(
     p_token VARCHAR,
@@ -48,6 +69,35 @@ BEGIN
         WHERE token = p_token;
     ELSE
         RAISE EXCEPTION 'Invalid or expired password reset token';
+    END IF;
+END;
+$$;
+
+-- sp_add_role
+CREATE OR REPLACE PROCEDURE sp_add_role(
+    p_role_name VARCHAR(50)
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO roles (name)
+    VALUES (p_role_name)
+    ON CONFLICT (name) DO NOTHING;
+END;
+$$;
+
+-- sp_delete_role
+CREATE OR REPLACE PROCEDURE sp_delete_role(
+    p_role_name VARCHAR(50)
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    DELETE FROM roles
+    WHERE name = p_role_name;
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Role with name % not found', p_role_name;
     END IF;
 END;
 $$;

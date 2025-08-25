@@ -74,10 +74,15 @@ The application was built with a strong focus on security, implementing multiple
     - Only the frontend is exposed to the public.
     - The backend and database are accessible exclusively within the internal network.
 
+## [Testing](#testing)
+
+- **Seeder:** Seeder for simulation can generated file size to ~9mb for primary database, and ~28mb for audit database, with detail 1000 customer and each customer have 100 transaction
+
 ## [Limitation For Speed Development](#limitation-for-speed-development)
 
 - To avoid over-engineering in this portfolio project, the database model is built strictly to the OpenAPI specification. As a result, certain enterprise features like soft deletes (`is_deleted`) are not universally present on all tables.
 - Data for frequent queries (e.g., user sessions) is not stored in an in-memory database like Redis. To prioritize simplicity and reduce infrastructure overhead, all data is stored and retrieved directly from PostgreSQL.
 - No refresh tokens are used, instead, there's a blacklist token used to keep JWTs secure, and the JWT time limit is only 1 hour.
 - No PIN is required when performing mutation actions.
-- Search not use full-field search because we didnt use dedicated search, so we use exact match for search because we indexed the database
+- Search not use full-field search because we didnt use dedicated search, so we use exact match for search because we indexed the database.
+- For audit, only showed in database not in frontend.

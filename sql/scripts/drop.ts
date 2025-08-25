@@ -1,18 +1,9 @@
-import postgres from 'postgres'
-import fs from 'fs'
-import { fileURLToPath } from 'url'
-import path from 'path'
+import { auditSql, primarySql, readFile } from './lib.ts'
 
-const primarySql = postgres('postgres://postgres:password@localhost:5432/bank_simulation_dev_dotnet')
-const auditSql = postgres('postgres://postgres:password@localhost:5433/bank_simulation_audit_dev_dotnet')
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
-async function dropPrimaryDatabase() {
+async function dropPrimarySchema() {
     try {
-        const primaryDropPath = path.join(__dirname, '..', 'sqls', 'drop.sql')
-        const primaryDropDDL = fs.readFileSync(primaryDropPath, 'utf8')
+        const primaryDropDDL = readFile('drop.sql')
 
         await primarySql.unsafe(primaryDropDDL)
     } catch (error) {
@@ -23,11 +14,10 @@ async function dropPrimaryDatabase() {
     }
 }
 
-async function dropAuditDatabase() {
+async function dropAuditSchema() {
     try {
-        const auditDropPath = path.join(__dirname, '..', 'sqls', 'drop_audit.sql')
-        const auditDropDDL = fs.readFileSync(auditDropPath, 'utf8')
-        
+        const auditDropDDL = readFile('drop_audit.sql')
+
         await auditSql.unsafe(auditDropDDL)
     } catch (error) {
         console.error("Audit Database drop error:\n" + error)
@@ -39,12 +29,12 @@ async function dropAuditDatabase() {
 
 async function main() {
     try {
-        await dropPrimaryDatabase()
-        await dropAuditDatabase()
+        await dropPrimarySchema()
+        await dropAuditSchema()
 
         console.log("All drop operations completed successfully.")
     } catch (error) {
-       console.error("Drop failed. Exiting.\n"+error)
+        console.error("Drop failed. Exiting.\n" + error)
     } finally {
         await primarySql.end()
         await auditSql.end()

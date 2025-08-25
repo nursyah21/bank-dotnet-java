@@ -1,3 +1,9 @@
 sdk
 
 node_modules/
+
+*.zip
+
+# Generated seed is to big it take ~9mb - ~28mb for 100_000 audit log transaction
+seed.sql
+seed_audit.sql

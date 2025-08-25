@@ -13,8 +13,11 @@ DROP FUNCTION IF EXISTS update_updated_at_column CASCADE;
 -- Drop all stored procedures
 DROP PROCEDURE IF EXISTS sp_delete_expired_tokens CASCADE;
 DROP PROCEDURE IF EXISTS sp_register_user;
+DROP PROCEDURE IF EXISTS sp_promote_to_admin;
 DROP PROCEDURE IF EXISTS sp_validate_user;
 DROP PROCEDURE IF EXISTS sp_reset_password_user;
+DROP PROCEDURE IF EXISTS sp_add_role;
+DROP PROCEDURE IF EXISTS sp_delete_role;
 DROP PROCEDURE IF EXISTS sp_transfer_money_by_customer;
 DROP PROCEDURE IF EXISTS sp_top_up_money_by_admin;
 DROP PROCEDURE IF EXISTS sp_withdrawal_money_by_user;
