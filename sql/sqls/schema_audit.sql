@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS audit_log (
     id BIGSERIAL PRIMARY KEY,
     user_id UUID,
     action VARCHAR(255) NOT NULL,
-    details JSONB NOT NULL,
+    message VARCHAR(255) NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 

@@ -16,11 +16,6 @@ components:
 
   schemas:
     # Reusable Schemas for Entities and Data Types
-    UserId:
-      type: string
-      example: '1234567890'
-      pattern: '^\\d{10}$'
-      description: A unique 10-digit customer or user ID.
     Password:
       type: string
       minLength: 8
@@ -59,7 +54,7 @@ components:
         id:
           $ref: '#/components/schemas/UUID'
         no_id:
-          $ref: '#/components/schemas/UserId'
+          $ref: '#/components/schemas/UUID'
         username:
           $ref: '#/components/schemas/Username'
         email:
@@ -267,7 +262,7 @@ paths:
                 - amount
               properties:
                 customer_id:
-                  $ref: '#/components/schemas/UserId'
+                  $ref: '#/components/schemas/UUID'
                 amount:
                   $ref: '#/components/schemas/Amount'
       responses:
@@ -324,7 +319,7 @@ paths:
                 - amount
               properties:
                 receiver_id:
-                  $ref: '#/components/schemas/UserId'
+                  $ref: '#/components/schemas/UUID'
                 amount:
                   $ref: '#/components/schemas/Amount'
       responses:

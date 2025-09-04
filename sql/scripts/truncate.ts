@@ -26,7 +26,7 @@ async function truncateAuditSchema() {
     }
 }
 
-async function main() {
+export async function main() {
     try {
         await truncatePrimarySchema()
         await truncateAuditSchema()

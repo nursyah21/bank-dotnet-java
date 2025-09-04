@@ -4,7 +4,7 @@ This project showcases a secure, scalable, and fully-featured banking applicatio
 
 ## [Motivation](#motivation)
 
-While this is a basic bank simulation, its core functionality (Auth + CRUD) is built to enterprise standards. Instead of focusing on a multitude of haphazard features, this project prioritizes stability and clean code qualities highly valued by companies.
+While this is a basic bank simulation, its core functionality (Auth + CRUD) is built to enterprise standards. Instead of focusing on a multitude of haphazard features, this project prioritizes stability and clean code qualities highly valued by companies. The backend and frontend are tightly integrated via OpenAPI contracts, with SDKs auto-generated to ensure type safety and reduce manual API handling.
 
 Here's a quick overview of the key decisions behind the project:
 
@@ -18,10 +18,10 @@ Here's a quick overview of the key decisions behind the project:
 
 ## [Tech Stack](#tech-stack)
 
-- **Backend:** Dotnet 8
+- **Backend:** Dotnet 8 + EF Core (reverse engineering from PostgreSQL schema)
 - **Frontend:** React + React Router V7 (Framework Mode)
 - **Database:** PostgreSQL
-- **Database Migration:** **Flyway** (For local development, custom scripts are used for ease of *debugging* and speed.)
+- **API Contract**: OpenAPI Spec + SDK generated via openapi-generator-cli (TypeScript)
 - **Containerization:** Docker
 - **Testing:** K6 (Load Testing), Playwright (E2E Testing)
 - **CI/CD:** Github Action
@@ -86,3 +86,4 @@ The application was built with a strong focus on security, implementing multiple
 - No PIN is required when performing mutation actions.
 - Search not use full-field search because we didnt use dedicated search, so we use exact match for search because we indexed the database.
 - For audit, only showed in database not in frontend.
+- Migration tooling is fully custom. Tools like Flyway were considered, but due to limited time to explore and adapt their automation model, custom SQL scripts were used instead. This approach offers direct control and flexibility, and can be extended as needed.

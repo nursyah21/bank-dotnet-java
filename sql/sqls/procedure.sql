@@ -1,6 +1,5 @@
 -- sp register user
 CREATE OR REPLACE PROCEDURE sp_register_user(
-    p_no_id VARCHAR,
     p_username VARCHAR,
     p_email VARCHAR,
     p_password_hash VARCHAR,
@@ -12,8 +11,8 @@ DECLARE
     v_user_id UUID;
     v_role_id INT;
 BEGIN
-    INSERT INTO users (no_id, username, email, password_hash, birth_date, is_validated, balance)
-    VALUES (p_no_id, p_username, p_email, p_password_hash, p_birth_date, FALSE, 0.00)
+    INSERT INTO users (username, email, password_hash, birth_date, is_validated, balance)
+    VALUES (p_username, p_email, p_password_hash, p_birth_date, FALSE, 0.00)
     RETURNING id INTO v_user_id;
 
     SELECT id INTO v_role_id FROM roles WHERE name = 'customer';
@@ -21,6 +20,8 @@ BEGIN
     IF v_role_id IS NOT NULL THEN
         INSERT INTO user_roles (user_id, role_id)
         VALUES (v_user_id, v_role_id);
+    ELSE
+        RAISE EXCEPTION 'Customer role does not exist.';
     END IF;
 END;
 $$;
@@ -46,6 +47,26 @@ BEGIN
 END;
 $$;
 
+-- sp create reset password token
+CREATE OR REPLACE PROCEDURE sp_create_reset_password_token(
+    p_user_id UUID,
+    p_token VARCHAR
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    DELETE FROM password_reset_tokens WHERE user_id = p_user_id;
+
+    INSERT INTO password_reset_tokens (user_id, token, expires_at)
+    VALUES (p_user_id, p_token, NOW() + INTERVAL '1 hour');
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'User with ID % not found', p_user_id;
+    END IF;
+END;
+$$;
+
+
 -- sp reset password user
 CREATE OR REPLACE PROCEDURE sp_reset_password_user(
     p_token VARCHAR,
@@ -70,6 +91,16 @@ BEGIN
     ELSE
         RAISE EXCEPTION 'Invalid or expired password reset token';
     END IF;
+END;
+$$;
+
+-- sp_delete_expired_password_reset_tokens
+CREATE OR REPLACE PROCEDURE sp_delete_expired_password_reset_tokens()
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    DELETE FROM password_reset_tokens
+    WHERE expires_at < NOW();
 END;
 $$;
 
@@ -129,12 +160,6 @@ BEGIN
 
     INSERT INTO transactions (sender_id, receiver_id, amount, type)
     VALUES (p_sender_id, p_receiver_id, p_amount, 'send');
-
-    COMMIT; -- Telah diperbaiki
-EXCEPTION
-    WHEN OTHERS THEN
-        ROLLBACK;
-        RAISE;
 END;
 $$;
 
@@ -161,12 +186,6 @@ BEGIN
 
     INSERT INTO transactions (sender_id, receiver_id, amount, type)
     VALUES (p_admin_id, p_user_id, p_amount, 'top-up');
-
-    COMMIT; -- Telah diperbaiki
-EXCEPTION
-    WHEN OTHERS THEN
-        ROLLBACK;
-        RAISE;
 END;
 $$;
 
@@ -209,21 +228,6 @@ BEGIN
 
     INSERT INTO transactions (sender_id, receiver_id, amount, type)
     VALUES (p_user_id, NULL, p_amount, 'withdrawal');
-
-    COMMIT; -- Telah diperbaiki
-EXCEPTION
-    WHEN OTHERS THEN
-        ROLLBACK;
-        RAISE;
 END;
 $$;
 
--- sp_delete_expired_tokens
-CREATE OR REPLACE PROCEDURE sp_delete_expired_tokens()
-LANGUAGE plpgsql
-AS $$
-BEGIN
-    DELETE FROM password_reset_tokens
-    WHERE expires_at < NOW();
-END;
-$$;
