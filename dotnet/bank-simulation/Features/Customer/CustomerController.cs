@@ -7,20 +7,20 @@ namespace bank_simulation.Features.Customer;
 public class CustomerController : ControllerBase
 {
     [HttpPost("send")]
-    public string SendMoney()
+    public object SendMoney()
     {
-        return "Send money";
+        return new { message = "Send money" };
     }
 
     [HttpPost("withdrawal")]
-    public string WithdrawalMoney()
+    public object WithdrawalMoney()
     {
-        return "Withdrawal money";
+        return new { message = "Withdrawal money" };
     }
 
     [HttpGet("transaction")]
-    public string ViewMyTransactions()
+    public object ViewMyTransactions()
     {
-        return "View my transaction";
+        return new { message = "View my transaction" };
     }
 }

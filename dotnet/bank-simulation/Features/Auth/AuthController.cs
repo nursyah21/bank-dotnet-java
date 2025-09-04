@@ -7,44 +7,44 @@ namespace bank_simulation.Features.Auth;
 public class AuthController : ControllerBase
 {
     [HttpPost("login")]
-    public string Login()
+    public object Login()
     {
-        return "Login";
+        return new { message = "Login" };
     }
 
     [HttpPost("register")]
-    public string Register()
+    public object Register()
     {
-        return "Register";
+        return new { message = "Register" };
     }
 
     [HttpGet("logout")]
-    public string Logout()
+    public object Logout()
     {
-        return "Logout";
+        return new { message = "Logout" };
     }
 
     [HttpGet("me")]
-    public string GetAuthenticatedUser()
+    public object GetAuthenticatedUser()
     {
-        return "Get authenticated user";
+        return new { message = "Get authenticated user" };
     }
 
     [HttpPost("reset-password")]
-    public string RequestPasswordReset()
+    public object RequestPasswordReset()
     {
-        return "Request password reset";
+        return new { message = "Request password reset" };
     }
 
     [HttpGet("reset-password")]
-    public string ValidatePasswordResetToken()
+    public object ValidatePasswordResetToken()
     {
-        return "Validate password reset token";
+        return new { message = "Validate password reset token" };
     }
 
     [HttpPut("reset-password")]
-    public string ChangePassword()
+    public object ChangePassword()
     {
-        return "Change password";
+        return new { message = "Change password" };
     }
 }

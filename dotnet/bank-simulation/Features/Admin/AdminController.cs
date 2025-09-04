@@ -7,20 +7,20 @@ namespace bank_simulation.Features.Admin;
 public class AdminController : ControllerBase
 {
     [HttpPost("top-up")]
-    public string TopUpCustomerBalance()
+    public object TopUpCustomerBalance()
     {
-        return "Top up customer balance";
+        return new { message = "Top up customer balance" };
     }
 
     [HttpGet("customer")]
-    public string ViewCustomers()
+    public object ViewCustomers()
     {
-        return "View customers";
+        return new { message = "View customers" };
     }
 
     [HttpGet("transaction")]
-    public string ViewAllTransactions()
+    public object ViewAllTransactions()
     {
-        return "View all transaction";
+        return new { message = "View all transaction" };
     }
 }

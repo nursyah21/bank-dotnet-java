@@ -15,7 +15,6 @@ components:
       name: jwt-token
 
   schemas:
-    # Reusable Schemas for Entities and Data Types
     Password:
       type: string
       minLength: 8
@@ -65,9 +64,46 @@ components:
           $ref: '#/components/schemas/Role'
         balance:
           $ref: '#/components/schemas/Amount'
+    TransactionResponse:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/UUID'
+        type:
+          $ref: '#/components/parameters/TypeParam/schema'
+        amount:
+          $ref: '#/components/schemas/Amount'
+        sender_id:
+          $ref: '#/components/schemas/UUID'
+        receiver_id:
+          $ref: '#/components/schemas/UUID'
+        created_at:
+          type: string
+          format: date-time
+    PaginatedUserResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserResponse'
+        total_items:
+          type: integer
+        page:
+          type: integer
+    PaginatedTransactionResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionResponse'
+        total_items:
+          type: integer
+        page:
+          type: integer
 
   parameters:
-    # Reusable Parameters for Query Strings
     SearchParam:
       name: search
       in: query
@@ -112,9 +148,8 @@ components:
       required: true
       schema:
         $ref: '#/components/schemas/Token'
-  
+
 paths:
-  # Auth Endpoints
   /auth/login:
     post:
       summary: Login
@@ -138,7 +173,7 @@ paths:
           description: Login success.
         '400':
           description: Invalid credentials.
-  
+
   /auth/register:
     post:
       summary: Register User
@@ -180,7 +215,7 @@ paths:
           description: Logout success.
         '401':
           description: Token missing or invalid.
-  
+
   /auth/me:
     get:
       summary: Get Authenticated User Info
@@ -196,7 +231,7 @@ paths:
                 $ref: '#/components/schemas/UserResponse'
         '401':
           description: Token missing or invalid.
-  
+
   /auth/reset-password:
     post:
       summary: Request Password Reset
@@ -217,7 +252,7 @@ paths:
           description: Link sent.
         '400':
           description: Invalid email.
-    
+
     get:
       summary: Validate Password Reset Token
       description: Validate the reset password token from the email link.
@@ -228,7 +263,7 @@ paths:
           description: Token valid.
         '400':
           description: Token invalid.
-    
+
     put:
       summary: Change Password
       description: Change password using a reset token.
@@ -252,7 +287,6 @@ paths:
         '400':
           description: Invalid token or password.
 
-  # Admin Endpoints
   /admin/top-up:
     post:
       summary: Top Up Customer Balance
@@ -278,7 +312,7 @@ paths:
           description: Top-up successful.
         '400':
           description: Invalid input.
-          
+
   /admin/customer:
     get:
       summary: View Customers
@@ -292,6 +326,10 @@ paths:
       responses:
         '200':
           description: Get data success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUserResponse'
         '400':
           description: Invalid input.
 
@@ -309,10 +347,13 @@ paths:
       responses:
         '200':
           description: Get data success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTransactionResponse'
         '400':
           description: Invalid input.
 
-  # Customer Endpoints
   /customer/send:
     post:
       summary: Send Money
@@ -338,7 +379,7 @@ paths:
           description: Send success.
         '400':
           description: Invalid input.
-  
+
   /customer/withdrawal:
     post:
       summary: Withdraw Money
@@ -361,7 +402,7 @@ paths:
           description: Withdrawal successful.
         '400':
           description: Invalid input.
-    
+
   /customer/transaction:
     get:
       summary: View My Transactions
@@ -376,5 +417,9 @@ paths:
       responses:
         '200':
           description: Get data success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTransactionResponse'
         '400':
           description: Invalid input.

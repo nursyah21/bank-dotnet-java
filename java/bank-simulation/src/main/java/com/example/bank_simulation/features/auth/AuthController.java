@@ -12,32 +12,32 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String register() {
-        return "Register";
+    public Map<String, String> register() {
+        return Map.of("message", "Register");
     }
 
     @GetMapping("/logout")
-    public String logout() {
-        return "Logout";
+    public Map<String, String> logout() {
+        return Map.of("message", "Logout");
     }
 
     @GetMapping("/me")
-    public String getAuthenticatedUser() {
-        return "Get authenticated user";
+    public Map<String, String> getAuthenticatedUser() {
+        return Map.of("message", "Get authenticated user");
     }
 
     @PostMapping("/reset-password")
-    public String requestPasswordReset() {
-        return "Request password reset";
+    public Map<String, String> requestPasswordReset() {
+        return Map.of("message", "Request password reset");
     }
 
     @GetMapping("/reset-password")
-    public String validatePasswordResetToken() {
-        return "Validate password reset token";
+    public Map<String, String> validatePasswordResetToken() {
+        return Map.of("message", "Validate password reset token");
     }
 
     @PutMapping("/reset-password")
-    public String changePassword() {
-        return "Change password";
+    public Map<String, String> changePassword() {
+        return Map.of("message", "Change password");
     }
 }
