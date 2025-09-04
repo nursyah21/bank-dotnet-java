@@ -7,3 +7,9 @@ node_modules/
 # Generated seed is to big it take ~9mb - ~28mb for 100_000 audit log transaction
 backup_audit.sql
 backup_primary.sql
+
+bin/
+*.sln
+obj/
+
+postman-collection
