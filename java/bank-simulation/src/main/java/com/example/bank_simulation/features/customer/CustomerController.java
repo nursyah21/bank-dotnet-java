@@ -1,4 +1,4 @@
-package com.example.bank_simulation.features.admin;
+package com.example.bank_simulation.features.customer;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

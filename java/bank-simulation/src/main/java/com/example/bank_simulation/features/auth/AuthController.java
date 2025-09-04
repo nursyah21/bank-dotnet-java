@@ -1,13 +1,14 @@
 package com.example.bank_simulation.features.auth;
 import org.springframework.web.bind.annotation.*;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthController {
 
     @PostMapping("/login")
-    public String login() {
-        return "Login";
+    public Map<String, String>  login() {
+        return Map.of("message", "Login");
     }
 
     @PostMapping("/register")
