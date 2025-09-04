@@ -20,7 +20,7 @@ Here’s a quick overview of the key decisions behind the project:
 
 - **Backend:**  
   - Dotnet 8 + EF Core (reverse engineering from PostgreSQL schema)  
-  - Java 17 + Spring Boot 3.4.9 (mirroring the Dotnet implementation with modular architecture, TDD, and OpenAPI integration)  
+  - Java 17 + Spring Boot 3.4.9 (mirroring the Dotnet implementation)  
 - **Frontend:** React + React Router V7 (Framework Mode)  
 - **Database:** PostgreSQL  
 - **API Contract:** OpenAPI Spec + SDK generated via openapi-generator-cli (TypeScript)  
