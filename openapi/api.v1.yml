@@ -5,7 +5,8 @@ info:
   description: API for managing authentication, customer, and admin operations for a bank simulation.
 
 servers:
-  - url: /api/v1
+  - url: http://localhost:5035/api/v1
+  - url: http://localhost:5036/api/v1
 
 components:
   securitySchemes:
