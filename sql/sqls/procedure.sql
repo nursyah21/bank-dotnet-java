@@ -66,7 +66,6 @@ BEGIN
 END;
 $$;
 
-
 -- sp reset password user
 CREATE OR REPLACE PROCEDURE sp_reset_password_user(
     p_token VARCHAR,
@@ -94,7 +93,7 @@ BEGIN
 END;
 $$;
 
--- sp_delete_expired_password_reset_tokens
+-- sp delete expired password reset tokens
 CREATE OR REPLACE PROCEDURE sp_delete_expired_password_reset_tokens()
 LANGUAGE plpgsql
 AS $$
@@ -104,7 +103,7 @@ BEGIN
 END;
 $$;
 
--- sp_add_role
+-- sp add role
 CREATE OR REPLACE PROCEDURE sp_add_role(
     p_role_name VARCHAR(50)
 )
@@ -117,7 +116,7 @@ BEGIN
 END;
 $$;
 
--- sp_delete_role
+-- sp delete role
 CREATE OR REPLACE PROCEDURE sp_delete_role(
     p_role_name VARCHAR(50)
 )
@@ -133,7 +132,7 @@ BEGIN
 END;
 $$;
 
--- sp_transfer_money_by_customer
+-- sp transfer money by customer
 CREATE OR REPLACE PROCEDURE sp_transfer_money_by_customer(
     p_sender_id UUID,
     p_receiver_id UUID,
@@ -163,7 +162,7 @@ BEGIN
 END;
 $$;
 
--- sp_top_up_money_by_admin
+-- sp top up money by admin
 CREATE OR REPLACE PROCEDURE sp_top_up_money_by_admin(
     p_admin_id UUID,
     p_user_id UUID,
@@ -189,7 +188,7 @@ BEGIN
 END;
 $$;
 
--- sp_validate_user
+-- sp validate user
 CREATE OR REPLACE PROCEDURE sp_validate_user(
     p_user_id UUID
 )
@@ -206,7 +205,7 @@ BEGIN
 END;
 $$;
 
--- sp_withdrawal_money_by_user
+-- sp withdrawal money by user
 CREATE OR REPLACE PROCEDURE sp_withdrawal_money_by_user(
     p_user_id UUID,
     p_amount NUMERIC

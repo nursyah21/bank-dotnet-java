@@ -1,6 +1,5 @@
 import { auditSql, primarySql, readFile } from './lib.ts'
 
-
 async function dropPrimarySchema() {
     try {
         const primaryDropDDL = readFile('drop.sql')

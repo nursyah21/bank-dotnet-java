@@ -32,3 +32,31 @@ export function getUser() {
 
     return { username, email, birth_date, password_hash, is_validated, balance }
 }
+
+export async function testLogMutation(
+    { userId, action, message }:
+        { userId: string | null, action: string, message: string }
+) {
+    await auditSql.unsafe('CALL sp_log_mutation($1, $2, $3)', [userId, action, message]);
+
+    const logEntry = userId
+        ? await auditSql`
+        SELECT * FROM audit_log 
+        WHERE user_id = ${userId} AND action = ${action} AND message = ${message}
+    `
+        : await auditSql`
+        SELECT * FROM audit_log 
+        WHERE user_id IS NULL AND action = ${action} AND message = ${message}
+    `;
+
+    if (logEntry.length === 0) {
+        throw new Error("sp_log_mutation failed: Log entry not found.");
+    }
+}
+
+export async function cleanDatabase() {
+    const primaryTruncateDDL = readFile('truncate.sql')
+    const auditTruncateDDL = readFile('truncate_audit.sql')
+    await primarySql.unsafe(primaryTruncateDDL)
+    await auditSql.unsafe(auditTruncateDDL)
+}

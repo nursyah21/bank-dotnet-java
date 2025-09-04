@@ -1,171 +1,235 @@
-import { faker } from '@faker-js/faker'
-import fs from 'fs'
-import { auditSql, getUser, primarySql } from "./lib.ts"
+import { faker } from "@faker-js/faker";
+import { auditSql, cleanDatabase, getPassword, getUser, primarySql, testLogMutation } from "./lib.ts";
 
-const usersLength = 1000
-const userTransactionLength = 100
+async function genRole(roles: Array<string>) {
 
-let sqlContent = ""
-let sqlContentAuditLog = ""
-const usersId = []
+    const rolesData = roles.map(roleName => [roleName]);
 
+    await primarySql.unsafe(`
+        INSERT INTO roles (name) 
+        SELECT * FROM UNNEST($1::text[])
+        ON CONFLICT (name) DO NOTHING
+    `, [primarySql.array(rolesData)])
 
-function seedRoleUser() {
-    sqlContent += `-- Seed roles\n`
-    sqlContent += `INSERT INTO roles (name) VALUES ('admin'), ('customer') ON CONFLICT (name) DO NOTHING;\n\n`
+    const log = {
+        userId: null,
+        action: "add_role",
+        message: `Role "${roles}" added`
+    }
+
+    await testLogMutation(log)
 }
 
-function seedUsersAndRoles() {
-    const users = []
-    const adminUser = getUser()
-    adminUser.username = 'admin'
-    adminUser.email = 'admin@mail.com'
-    users.push(adminUser)
+async function genCustomer(length: number) {
+    const password = getPassword('password')
 
-    for (let i = 0; i < usersLength; i++) {
-        users.push(getUser())
+    const customerData: Array<any[]> = [];
+    for (let i = 0; i < length; i++) {
+        const user = getUser();
+        user.username = user.username.substring(0, 15) + i.toString().padStart(4, '0')
+        user.email = `${user.username}@gmail.com`
+        customerData.push([
+            user.username,
+            user.email,
+            user.birth_date,
+            password,
+            true,
+            50.00
+        ]);
     }
 
-    sqlContent += `-- Seed 1001 users (including admin)\n`
-    sqlContent += `INSERT INTO users (no_id, username, email, birth_date, password_hash)\n`
-    sqlContent += `VALUES\n`
+    await primarySql.unsafe(`
+    INSERT INTO users (username, email, birth_date, password_hash, is_validated, balance)
+        -- Use a generic text array and explicitly cast the values
+        SELECT * FROM UNNEST($1::text[], $2::text[], $3::date[], $4::text[], $5::boolean[], $6::numeric[])
+    `, [
+        primarySql.array(customerData.map(d => d[0])),
+        primarySql.array(customerData.map(d => d[1])),
+        primarySql.array(customerData.map(d => d[2])),
+        primarySql.array(customerData.map(d => d[3])),
+        primarySql.array(customerData.map(d => d[4])),
+        primarySql.array(customerData.map(d => d[5])),
+    ])
 
-    for (let i = 0; i < users.length; i++) {
-        sqlContent += `('${users[i].no_id}', '${users[i].username}', '${users[i].email}', '${users[i].birth_date}', '${users[i].password_hash}')`
-        if (i != users.length - 1) {
-            sqlContent += ','
-        }
-        sqlContent += '\n'
+    await primarySql.unsafe(`
+        INSERT INTO user_roles (user_id, role_id)
+        SELECT id, (SELECT id FROM roles WHERE name = 'customer')
+        FROM users
+        WHERE is_validated = TRUE
+    `)
+
+    const log = {
+        userId: null,
+        action: "generate customer",
+        message: `generate ${length} customer`
     }
 
-    sqlContent += `ON CONFLICT (username) DO NOTHING;\n\n`
-
-    sqlContent += `-- Assign roles to users\n`
-    sqlContent += `INSERT INTO user_roles (user_id, role_id)\n`
-    sqlContent += `SELECT id, (SELECT id FROM roles WHERE name = 'admin') FROM users WHERE username = 'admin';\n`
-
-    sqlContent += `INSERT INTO user_roles (user_id, role_id)\n`
-    sqlContent += `SELECT id, (SELECT id FROM roles WHERE name = 'customer') FROM users WHERE username != 'admin';\n\n`
+    await testLogMutation(log)
 }
 
-function applyUsersAndRoles() {
+async function genAdmin(length: number) {
+    const password = getPassword('password')
 
+    const adminData: Array<any[]> = [];
+    for (let i = 0; i < length; i++) {
+        const user = getUser();
+        user.username = 'admin' + i.toString().padStart(4, '0')
+        user.email = `${user.username}@gmail.com`
+        adminData.push([
+            user.username,
+            user.email,
+            user.birth_date,
+            password,
+            true,
+        ]);
+    }
+
+    await primarySql.unsafe(`
+    INSERT INTO users (username, email, birth_date, password_hash, is_validated)
+        -- Use a generic text array and explicitly cast the values
+        SELECT * FROM UNNEST($1::text[], $2::text[], $3::date[], $4::text[], $5::boolean[])
+    `, [
+        primarySql.array(adminData.map(d => d[0])),
+        primarySql.array(adminData.map(d => d[1])),
+        primarySql.array(adminData.map(d => d[2])),
+        primarySql.array(adminData.map(d => d[3])),
+        primarySql.array(adminData.map(d => d[4])),
+    ])
+
+    await primarySql.unsafe(`
+        INSERT INTO user_roles (user_id, role_id)
+        SELECT id, (SELECT id FROM roles WHERE name = 'admin')
+        FROM users
+        WHERE username IN (${adminData.map(d => `'${d[0]}'`).join(', ')})
+    `)
+
+    const log = {
+        userId: null,
+        action: "generate admin",
+        message: `generate ${length} admin`
+    }
+
+    await testLogMutation(log)
 }
 
-function getUserId() {
+async function getCustomerIds(): Promise<Array<string>> {
+    const customerUsers = await primarySql`
+        SELECT u.id
+        FROM users u
+        JOIN user_roles ur ON u.id = ur.user_id
+        JOIN roles r ON ur.role_id = r.id
+        WHERE r.name = 'customer'
+    `
 
+    return customerUsers.map(user => user.id)
 }
 
-async function seedTransactions() {
-    console.log("Fetching existing user IDs for transaction seeding...")
-    // HANYA mengambil kolom 'id' untuk mengoptimalkan kecepatan.
-    const users = await primarySql`SELECT id FROM users`;
-    console.log(`Fetched ${users.length} user IDs. Generating transaction data...`);
+async function genTransaction(length: number, customerIds: Array<string>) {
+    if (customerIds.length < 2) {
+        console.warn("Not enough customers to generate transactions. Skipping.")
+        return;
+    }
 
-    const fakeTransactions = [];
+    const transactionsDataForArray = [];
+    for (const senderId of customerIds) {
+        for (let i = 0; i < length; i++) {
+            let receiverId = faker.helpers.arrayElement(customerIds);
+            while (senderId === receiverId) {
+                receiverId = faker.helpers.arrayElement(customerIds);
+            }
 
-    for (let i = 0; i < usersLength; i++) {
-        const senderId = faker.string.uuid();
-
-        for (let j = 0; j < userTransactionLength; j++) {
-            const receiverId = faker.string.uuid();
-            const amount = faker.finance.amount({ min: 10, max: 500, dec: 2 });
-
-            fakeTransactions.push({
-                sender_id: senderId,
-                receiver_id: receiverId,
-                amount: amount,
-                type: 'send'
-            });
+            transactionsDataForArray.push([
+                senderId,
+                receiverId,
+                faker.finance.amount({ min: 5, max: 50, dec: 2 }),
+                'send'
+            ]);
         }
     }
 
-    sqlContent += `-- Seed fake transactions\n`
-    sqlContent += `INSERT INTO transactions (sender_id, receiver_id, amount, type)\n`
-    sqlContent += `VALUES\n`
+    await primarySql.unsafe(`
+        INSERT INTO transactions (sender_id, receiver_id, amount, type)
+        SELECT * FROM UNNEST($1::uuid[], $2::uuid[], $3::numeric[], $4::transaction_type[])
+    `, [
+        primarySql.array(transactionsDataForArray.map(d => d[0])),
+        primarySql.array(transactionsDataForArray.map(d => d[1])),
+        primarySql.array(transactionsDataForArray.map(d => d[2])),
+        primarySql.array(transactionsDataForArray.map(d => d[3])),
+    ])
 
-    for (let i = 0; i < fakeTransactions.length; i++) {
-        const t = fakeTransactions[i];
-        sqlContent += `('${t.sender_id}', '${t.receiver_id}', ${t.amount}, '${t.type}')`
-        if (i != fakeTransactions.length - 1) {
-            sqlContent += ','
-        }
-        sqlContent += '\n'
+    await primarySql.unsafe(`
+        WITH transaction_updates AS (
+            SELECT sender_id AS user_id, -SUM(amount) AS balance_change FROM transactions GROUP BY sender_id
+            UNION ALL
+            SELECT receiver_id AS user_id, SUM(amount) AS balance_change FROM transactions GROUP BY receiver_id
+        )
+        UPDATE users
+        SET balance = users.balance + changes.total_change
+        FROM (
+            SELECT user_id, SUM(balance_change) AS total_change
+            FROM transaction_updates
+            GROUP BY user_id
+        ) AS changes
+        WHERE users.id = changes.user_id;
+    `)
+
+    const log = {
+        userId: null,
+        action: "generate transaction",
+        message: `generate ${length} transaction for ${customerIds.length} customer`
     }
+
+    await testLogMutation(log)
 }
 
+async function fixNegativeBalances() {
+    const negativeBalanceUsers = await primarySql`
+        SELECT id, balance
+        FROM users
+        WHERE balance < 0
+    `
 
-async function seedAuditLogs() {
-    const actions = ['login', 'logout', 'transfer_money', 'top_up', 'password_change'];
-    const fakeLogs = [];
+    for (const user of negativeBalanceUsers) {
+        const topUpAmount = 50.00 - Number(user.balance)
 
-    for (let i = 0; i < usersLength; i++) {
-        const userId = faker.string.uuid();
-        for (let j = 0; j < userTransactionLength; j++) {
-            const action = faker.helpers.arrayElement(actions);
-            const details = JSON.stringify({
-                ip: faker.internet.ipv4(),
-                userAgent: faker.internet.userAgent(),
-                additional_info: `Simulated action for user ${userId}`
-            });
-            fakeLogs.push({ user_id: userId, action, details });
-        }
+        await primarySql`
+            UPDATE users
+            SET balance = balance + ${topUpAmount}
+            WHERE id = ${user.id}
+        `
     }
 
-    sqlContentAuditLog += `-- Seed fake audit log\n`
-    sqlContentAuditLog += `INSERT INTO users (user_id, action, details)\n`
-    sqlContentAuditLog += `VALUES\n`
-
-    for (let i = 0; i < fakeLogs.length; i++) {
-        sqlContentAuditLog += `('${fakeLogs[i].user_id}', '${fakeLogs[i].action}', '${fakeLogs[i].details}'')`
-        if (i != fakeLogs.length - 1) {
-            sqlContentAuditLog += ','
-        }
-        sqlContentAuditLog += '\n'
+    const log = {
+        userId: null,
+        action: "balance_fix",
+        message: `Fixed negative balance`
     }
-}
-
-function writeGenerateSeed() {
-    try {
-        seedRoleUser()
-        seedUsersAndRoles()
-        seedTransactions()
-        seedAuditLogs()
-        fs.writeFileSync('seed.sql', sqlContent)
-        fs.writeFileSync('seed_audit.sql', sqlContentAuditLog)
-    } catch (error) {
-        console.log("Generate seeding file error:", error)
-    }
-}
-
-async function applySeeder() {
-    try {
-        // only seeding if data not exist
-        const roles = await primarySql`SELECT COUNT(*) FROM roles`;
-        if (roles[0].count === '0') {
-            await primarySql.unsafe(sqlContent);
-        }
-
-        const audit = await auditSql`SELECT COUNT(*) FROM audit_log`;
-        if (audit[0].count === '0') {
-            await auditSql.unsafe(sqlContentAuditLog);
-        }
-    } catch (error) {
-        console.log("Apply seeder error:", error)
-    } finally {
-        await primarySql.end()
-        await auditSql.end()
-    }
+    await testLogMutation(log)
 }
 
 async function main() {
+    const usersLength = 1000
+    const adminLength = 5
+    const userTransactionLength = 100
+
     try {
-        writeGenerateSeed()
-        await applySeeder()
+        await cleanDatabase()
+
+        await genRole(['admin', 'customer'])
+        await genCustomer(usersLength)
+        await genAdmin(adminLength)
+        const customerIds = await getCustomerIds()
+
+        await genTransaction(userTransactionLength, customerIds)
+        await fixNegativeBalances()
 
         console.log("Seeding successfully.")
     } catch (error) {
         console.log("Seeding error:", error)
+        throw error
+    } finally {
+        await primarySql.end()
+        await auditSql.end()
     }
 }
 
