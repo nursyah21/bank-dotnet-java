@@ -1,8 +1,7 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva } from "class-variance-authority"
-import type {VariantProps} from "class-variance-authority"
-
+import type { VariantProps } from "class-variance-authority"
 import { PanelLeftIcon } from "lucide-react"
 
 import { useIsMobile } from "~/hooks/use-mobile"
@@ -25,8 +24,7 @@ import {
   TooltipTrigger,
 } from "~/components/ui/tooltip"
 
-const SIDEBAR_COOKIE_NAME = "sidebar_state"
-const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
+const SIDEBAR_COOKIE_NAME = "sidebar_state" // Tetap menggunakan nama ini sebagai kunci local storage
 const SIDEBAR_WIDTH = "16rem"
 const SIDEBAR_WIDTH_MOBILE = "18rem"
 const SIDEBAR_WIDTH_ICON = "3rem"
@@ -69,27 +67,35 @@ function SidebarProvider({
   const isMobile = useIsMobile()
   const [openMobile, setOpenMobile] = React.useState(false)
 
-  // This is the internal state of the sidebar.
-  // We use openProp and setOpenProp for control from outside the component.
-  const [_open, _setOpen] = React.useState(defaultOpen)
-  const open = openProp ?? _open
-  const setOpen = React.useCallback(
-    (value: boolean | ((value: boolean) => boolean)) => {
-      const openState = typeof value === "function" ? value(open) : value
-      if (setOpenProp) {
-        setOpenProp(openState)
-      } else {
-        _setOpen(openState)
+  // Inisialisasi state dengan nilai dari localStorage
+  // Membaca dari localStorage dilakukan hanya satu kali saat komponen diinisialisasi.
+  const [_open, _setOpen] = React.useState(() => {
+    try {
+      const storedState = localStorage.getItem(SIDEBAR_COOKIE_NAME)
+      if (storedState !== null) {
+        return storedState === "true"
       }
+    } catch (e) {
+      console.error("Failed to read from localStorage:", e)
+    }
+    return defaultOpen
+  })
+  
+  // Sync state with local storage whenever _open changes.
+  React.useEffect(() => {
+    try {
+      localStorage.setItem(SIDEBAR_COOKIE_NAME, String(_open))
+    } catch (e) {
+      console.error("Failed to write to localStorage:", e)
+    }
+  }, [_open])
 
-      // This sets the cookie to keep the sidebar state.
-      document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
-    },
-    [setOpenProp, open]
-  )
+  const open = openProp ?? _open
+  const setOpen = setOpenProp ?? _setOpen
 
   // Helper to toggle the sidebar.
   const toggleSidebar = React.useCallback(() => {
+    // @ts-ignore
     return isMobile ? setOpenMobile((open) => !open) : setOpen((open) => !open)
   }, [isMobile, setOpen, setOpenMobile])
 
@@ -161,7 +167,8 @@ function Sidebar({
 }: React.ComponentProps<"div"> & {
   side?: "left" | "right"
   variant?: "sidebar" | "floating" | "inset"
-  collapsible?: "offcanvas" | "icon" | "none"
+  collapsible?: "offcanvas" | "icon" | "none",
+  navuser?: React.ReactNode
 }) {
   const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
 
@@ -429,6 +436,9 @@ function SidebarGroupAction({
         "text-sidebar-foreground ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground absolute top-3.5 right-3 flex aspect-square w-5 items-center justify-center rounded-md p-0 outline-hidden transition-transform focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0",
         // Increases the hit area of the button on mobile.
         "after:absolute after:-inset-2 md:after:hidden",
+        "peer-data-[size=sm]/menu-button:top-1",
+        "peer-data-[size=default]/menu-button:top-1.5",
+        "peer-data-[size=lg]/menu-button:top-2.5",
         "group-data-[collapsible=icon]:hidden",
         className
       )}
