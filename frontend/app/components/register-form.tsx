@@ -53,13 +53,13 @@ export function RegisterForm({
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
                 </div>
-                <Input id="password" type="password" placeholder="password" required />
+                <Input id="password" type="password" placeholder="password" autoComplete="new-password" required />
               </div>
               <div className="grid gap-3">
                 <div className="flex items-center">
                   <Label htmlFor="confirm_password">Confirm Password</Label>
                 </div>
-                <Input id="confirm_password" type="password" placeholder="password" required />
+                <Input id="confirm_password" type="password" placeholder="password" autoComplete="new-password" required />
               </div>
               <div className="flex flex-col gap-3">
                 <Button type="submit" className="w-full">

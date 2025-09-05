@@ -23,7 +23,7 @@ Here’s a quick overview of the key decisions behind the project:
   - Java 17 + Spring Boot 3.4.9 (mirroring the Dotnet implementation)  
 - **Frontend:** React + React Router V7 (Framework Mode)  
 - **Database:** PostgreSQL  
-- **API Contract:** OpenAPI Spec + SDK generated via openapi-generator-cli (TypeScript)  
+- **API Contract:** OpenAPI Spec
 - **Containerization:** Docker  
 - **Testing:** K6 (Load Testing), Playwright (E2E Testing)  
 - **CI/CD:** GitHub Actions  
@@ -63,8 +63,7 @@ The application was built with a strong focus on security, implementing multiple
 ## Frontend / UI
 
 - **Use Client Side Rendering:** Because this app didn’t need SEO, client-side rendering is preferred for better performance.  
-- **Clean & Familiar Design:** The UI is designed to be clean and familiar, inspired by Microsoft products like Word and Excel.  
-- **Navigation:** Uses a top navigation bar instead of a sidebar for a cleaner layout.  
+- **Built with shadcn/ui Components**: The interface leverages accessible and customizable components from shadcn/ui.
 
 ## Architecture
 

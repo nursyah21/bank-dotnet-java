@@ -41,7 +41,7 @@ export function LoginForm({
                     Forgot your password?
                   </Link>
                 </div>
-                <Input id="password" type="password" placeholder="password" required />
+                <Input id="password" type="password" placeholder="password" autoComplete="new-password" required />
               </div>
               <div className="flex flex-col gap-3">
                 <Button type="submit" className="w-full">

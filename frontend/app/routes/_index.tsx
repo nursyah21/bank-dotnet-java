@@ -6,12 +6,10 @@ export function meta({ }: Route.MetaArgs) {
   ];
 }
 
-export function loader() {
-  throw redirect("/login");
+export function clientLoader() {
+  throw redirect("/home");
 }
 
 export default function Index() {
-  return <div className="center">
-    ini di index
-  </div>;
+  return <></>;
 }
