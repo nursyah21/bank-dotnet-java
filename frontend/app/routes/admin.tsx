@@ -1,21 +1,21 @@
 import { Outlet } from "react-router";
-import { CustomerLayout } from "~/components/layouts/customer-layout";
-import type { Route } from "./+types/home";
+import { AdminLayout } from "~/components/layouts/admin-layout";
+import type { Route } from "./+types/admin";
 
 export function meta({ }: Route.MetaArgs) {
   return [
-    { title: "Home" },
+    { title: "Admin" },
   ];
 }
 
 export default function Page() {
   return (
-    <CustomerLayout>
+    <AdminLayout>
       <div className="flex flex-1 flex-col">
         <div className="@container/main flex flex-1 flex-col gap-2">
           <Outlet />
         </div>
       </div>
-    </CustomerLayout>
+    </AdminLayout>
   )
 }

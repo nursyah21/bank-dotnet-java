@@ -28,7 +28,7 @@ interface CustomerSidebarProps extends React.ComponentProps<typeof Sidebar> {
   };
 }
 
-export function CustomerSidebar({ data, ...props }: CustomerSidebarProps) {
+export function SharedSidebar({ data, ...props }: CustomerSidebarProps) {
   const { pathname } = useLocation()
 
   return (
@@ -36,14 +36,14 @@ export function CustomerSidebar({ data, ...props }: CustomerSidebarProps) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
+            <div className="p-2 text-sm">
               <Link to="/" className="flex items-center gap-2 font-medium">
                 <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
                   <GalleryVerticalEnd className="size-4" />
                 </div>
                 Bank Acme Inc.
               </Link>
-            </SidebarMenuButton>
+            </div>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
@@ -80,7 +80,7 @@ export function CustomerSidebar({ data, ...props }: CustomerSidebarProps) {
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
-        {props.navuser}
+      {props.navuser}
       <SidebarRail />
     </Sidebar>
   )

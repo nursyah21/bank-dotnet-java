@@ -14,30 +14,30 @@ import { NavUser } from "../nav-user"
 const myNavData = {
   navMain: [
     {
-      title: "Home",
-      url: "/home",
+      title: "Admin",
+      url: "/admin",
     },
     {
       title: "Transaction",
-      url: "/home/transaction",
+      url: "/admin/transaction",
     },
     {
-      title: "Send Money",
-      url: "/home/send-money",
+      title: "Customer",
+      url: "/admin/customer",
     },
     {
-      title: "Withdrawal",
-      url: "/home/withdrawal",
+      title: "Top Up Customer",
+      url: "/admin/top-up-customer",
     },
   ],
 }
 
 const user = {
-  name: 'customer',
-  email: 'customer@mail.com'
+  name: 'admin',
+  email: 'admin@mail.com'
 }
 
-export function CustomerLayout({ children }: { children: React.ReactNode }) {
+export function AdminLayout({ children }: { children: React.ReactNode }) {
   const { pathname } = useLocation()
 
   const currentBreadcrumb = myNavData.navMain.find(item => item.url === pathname)
