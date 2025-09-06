@@ -47,7 +47,11 @@ components:
       format: uuid
     Token:
       type: string
-      description: A JWT token for authentication or a temporary token for password reset.
+      description: A JWT token for authentication.
+    HexToken:
+      type: string
+      pattern: "^[0-9a-fA-F]+$"
+      description: A hexadecimal token for password reset.
     ResponseDto:
       type: object
       properties:
@@ -59,8 +63,6 @@ components:
       type: object
       properties:
         id:
-          $ref: "#/components/schemas/UUID"
-        no_id:
           $ref: "#/components/schemas/UUID"
         username:
           $ref: "#/components/schemas/Username"
@@ -78,7 +80,8 @@ components:
         id:
           $ref: "#/components/schemas/UUID"
         type:
-          $ref: "#/components/parameters/TypeParam/schema"
+          type: string
+          enum: [received, send, withdrawal]
         amount:
           $ref: "#/components/schemas/Amount"
         sender_id:
@@ -91,7 +94,7 @@ components:
     AdminCustomerResponse:
       type: object
       properties:
-        no_id:
+        id:
           $ref: "#/components/schemas/UUID"
         username:
           $ref: "#/components/schemas/Username"
@@ -168,7 +171,7 @@ components:
       in: query
       required: true
       schema:
-        $ref: "#/components/schemas/Token"
+        $ref: "#/components/schemas/HexToken"
 
 paths:
   /auth/login:
@@ -365,7 +368,7 @@ paths:
               examples:
                 invalidEmail:
                   value:
-                    message: "Email is not in a valid format or does not exist."
+                    message: "Invalid email format."
                     success: false
 
     get:
@@ -400,6 +403,8 @@ paths:
     put:
       summary: Change Password
       description: Change password using a reset token.
+      parameters:
+        - $ref: "#/components/parameters/ResetPasswordToken"
       requestBody:
         required: true
         content:
@@ -407,13 +412,11 @@ paths:
             schema:
               type: object
               required:
-                - tokenReset
                 - password
               properties:
-                tokenReset:
-                  $ref: "#/components/schemas/Token"
                 password:
                   $ref: "#/components/schemas/Password"
+                
       responses:
         "200":
           description: Password changed.
@@ -503,12 +506,12 @@ paths:
                 success:
                   value:
                     data:
-                      - no_id: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                      - id: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
                         username: "user_test"
                         email: "user_test@example.com"
                         birth_date: "2000-12-30"
                         balance: 100.00
-                      - no_id: "2fa85f64-5717-4562-b3fc-2c963f66afa6"
+                      - id: "2fa85f64-5717-4562-b3fc-2c963f66afa6"
                         username: "user_test_2"
                         email: "user_test2@example.com"
                         birth_date: "1999-01-01"

@@ -25,7 +25,7 @@ Here’s a quick overview of the key decisions behind the project:
 - **Database:** PostgreSQL  
 - **API Contract:** OpenAPI Spec
 - **Containerization:** Docker  
-- **Testing:** K6 (Load Testing), Playwright (E2E Testing)  
+- **Load Testing:** K6  
 - **CI/CD:** GitHub Actions  
 - **Monitoring:** Prometheus + Grafana  
 
