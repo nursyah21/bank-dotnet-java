@@ -1,3 +1,5 @@
+using bank_simulation.Features.Admin.Dto;
+using bank_simulation.Shared.Dto;
 using Microsoft.AspNetCore.Mvc;
 
 namespace bank_simulation.Features.Admin;
@@ -6,21 +8,30 @@ namespace bank_simulation.Features.Admin;
 [Route("api/v1/[controller]")]
 public class AdminController : ControllerBase
 {
-    [HttpPost("top-up")]
-    public object TopUpCustomerBalance()
+    private readonly IAdminService _adminService;
+    public AdminController(IAdminService adminService)
     {
-        return new { message = "Top up customer balance" };
+        _adminService = adminService;
+    }
+
+    [HttpPost("top-up")]
+    public async Task<IActionResult> TopUpCustomerBalance([FromBody] RequestTopUpCustomer request)
+    {
+        var result = await _adminService.TopUpCustomerBalanceAsync(request);
+        return Ok(result);
     }
 
     [HttpGet("customer")]
-    public object ViewCustomers()
+    public async Task<IActionResult> ViewCustomers([FromQuery] RequestPaginated request)
     {
-        return new { message = "View customers" };
+        var result = await _adminService.ViewCustomersAsync(request);
+        return Ok(result);
     }
 
     [HttpGet("transaction")]
-    public object ViewAllTransactions()
+    public async Task<IActionResult> ViewTransactionCustomers([FromQuery] RequestPaginated request)
     {
-        return new { message = "View all transaction" };
+        var result = await _adminService.ViewTransactionCustomersAsync(request);
+        return Ok(result);
     }
 }

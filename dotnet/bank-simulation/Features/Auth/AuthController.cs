@@ -1,3 +1,5 @@
+using bank_simulation.Features.Auth.Dto;
+using bank_simulation.Shared.Dto;
 using Microsoft.AspNetCore.Mvc;
 
 namespace bank_simulation.Features.Auth;
@@ -6,45 +8,58 @@ namespace bank_simulation.Features.Auth;
 [Route("api/v1/[controller]")]
 public class AuthController : ControllerBase
 {
-    [HttpPost("login")]
-    public object Login()
+    private readonly IAuthService _authService;
+    public AuthController(IAuthService authService)
     {
-        return new { message = "Login" };
+        _authService = authService;
+    }
+
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] RequestLogin request)
+    {
+        var result = await _authService.LoginAsync(request);
+        return Ok(result);
     }
 
     [HttpPost("register")]
-    public object Register()
+    public async Task<IActionResult> Register([FromBody] RequestRegister request)
     {
-        return new { message = "Register" };
+        var result = await _authService.RegisterAsync(request);
+        return Ok(result);
     }
 
     [HttpGet("logout")]
-    public object Logout()
+    public async Task<IActionResult> Logout()
     {
-        return new { message = "Logout" };
+        var result = await _authService.LogoutAsync();
+        return Ok(result);
     }
 
     [HttpGet("me")]
-    public object GetAuthenticatedUser()
+    public async Task<IActionResult> GetAuthenticatedUser()
     {
-        return new { message = "Get authenticated user" };
+        var result = await _authService.GetAuthenticatedUserAsync();
+        return Ok(result);
     }
 
     [HttpPost("reset-password")]
-    public object RequestPasswordReset()
+    public async Task<IActionResult> RequestPasswordReset([FromBody] RequestResetPassword request)
     {
-        return new { message = "Request password reset" };
+        var result = await _authService.RequestPasswordResetAsync(request);
+        return StatusCode(201, result);
     }
 
     [HttpGet("reset-password")]
-    public object ValidatePasswordResetToken()
+    public async Task<IActionResult> ValidatePasswordResetToken([FromQuery] RequestToken request)
     {
-        return new { message = "Validate password reset token" };
+        var result = await _authService.ValidatePasswordResetTokenAsync(request);
+        return Ok(result);
     }
 
     [HttpPut("reset-password")]
-    public object ChangePassword()
+    public async Task<IActionResult> ChangePassword([FromQuery] RequestToken requestToken, [FromBody] RequestChangePassword request)
     {
-        return new { message = "Change password" };
+        var result = await _authService.ChangePassworAsync(requestToken, request);
+        return Ok(result);
     }
 }

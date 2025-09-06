@@ -1,3 +1,5 @@
+using bank_simulation.Features.Customer.Dto;
+using bank_simulation.Shared.Dto;
 using Microsoft.AspNetCore.Mvc;
 
 namespace bank_simulation.Features.Customer;
@@ -6,21 +8,30 @@ namespace bank_simulation.Features.Customer;
 [Route("api/v1/[controller]")]
 public class CustomerController : ControllerBase
 {
-    [HttpPost("send")]
-    public object SendMoney()
+    private readonly ICustomerService _customerService;
+    public CustomerController(ICustomerService customerService)
     {
-        return new { message = "Send money" };
+        _customerService = customerService;
+    }
+
+    [HttpPost("send")]
+    public async Task<IActionResult> SendMoney([FromBody] RequestSendMoney request)
+    {
+        var result = await _customerService.SendMoneyAsync(request);
+        return Ok(result);
     }
 
     [HttpPost("withdrawal")]
-    public object WithdrawalMoney()
+    public async Task<IActionResult> WithdrawalMoney([FromBody] RequestWidthdrawal request)
     {
-        return new { message = "Withdrawal money" };
+        var result = await _customerService.WithdrawalMoneyAsync(request);
+        return Ok(result);
     }
 
     [HttpGet("transaction")]
-    public object ViewMyTransactions()
+    public async Task<IActionResult> ViewMyTransactions([FromQuery] RequestPaginated request)
     {
-        return new { message = "View my transaction" };
+        var result = await _customerService.ViewMyTransactionsAsync(request);
+        return Ok(result);
     }
 }
