@@ -88,13 +88,26 @@ components:
         created_at:
           type: string
           format: date-time
+    AdminCustomerResponse:
+      type: object
+      properties:
+        no_id:
+          $ref: "#/components/schemas/UUID"
+        username:
+          $ref: "#/components/schemas/Username"
+        email:
+          $ref: "#/components/schemas/Email"
+        birth_date:
+          $ref: "#/components/schemas/BirthDate"
+        balance:
+          $ref: "#/components/schemas/Amount"
     PaginatedUserResponse:
       type: object
       properties:
         data:
           type: array
           items:
-            $ref: "#/components/schemas/UserResponse"
+            $ref: "#/components/schemas/AdminCustomerResponse"
         total_items:
           type: integer
         page:
@@ -295,6 +308,15 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserResponse"
+              examples:
+                success:
+                  value:
+                    id: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                    username: "user_test"
+                    email: "user_test@example.com"
+                    birth_date: "2000-12-30"
+                    role: "customer"
+                    balance: 100.00
         "401":
           description: Token missing or invalid.
           content:
@@ -477,6 +499,22 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PaginatedUserResponse"
+              examples:
+                success:
+                  value:
+                    data:
+                      - no_id: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                        username: "user_test"
+                        email: "user_test@example.com"
+                        birth_date: "2000-12-30"
+                        balance: 100.00
+                      - no_id: "2fa85f64-5717-4562-b3fc-2c963f66afa6"
+                        username: "user_test_2"
+                        email: "user_test2@example.com"
+                        birth_date: "1999-01-01"
+                        balance: 50.50
+                    total_items: 2
+                    page: 1
         "400":
           description: Invalid input.
           content:
@@ -507,6 +545,24 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PaginatedTransactionResponse"
+              examples:
+                success:
+                  value:
+                    data:
+                      - id: "1a85f64-5717-4562-b3fc-2c963f66afa6"
+                        type: "send"
+                        amount: 25.0
+                        sender_id: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                        receiver_id: "2fa85f64-5717-4562-b3fc-2c963f66afa6"
+                        created_at: "2024-05-18T10:00:00Z"
+                      - id: "4a85f64-5717-4562-b3fc-2c963f66afa6"
+                        type: "withdrawal"
+                        amount: 15.0
+                        sender_id: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                        receiver_id: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                        created_at: "2024-05-18T11:30:00Z"
+                    total_items: 2
+                    page: 1
         "400":
           description: Invalid input.
           content:
@@ -622,6 +678,24 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PaginatedTransactionResponse"
+              examples:
+                success:
+                  value:
+                    data:
+                      - id: "1a85f64-5717-4562-b3fc-2c963f66afa6"
+                        type: "send"
+                        amount: 25.0
+                        sender_id: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                        receiver_id: "2fa85f64-5717-4562-b3fc-2c963f66afa6"
+                        created_at: "2024-05-18T10:00:00Z"
+                      - id: "4a85f64-5717-4562-b3fc-2c963f66afa6"
+                        type: "withdrawal"
+                        amount: 15.0
+                        sender_id: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                        receiver_id: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                        created_at: "2024-05-18T11:30:00Z"
+                    total_items: 2
+                    page: 1
         "400":
           description: Invalid input.
           content:
