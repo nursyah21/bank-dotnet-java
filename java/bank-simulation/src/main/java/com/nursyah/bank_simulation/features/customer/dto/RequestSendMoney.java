@@ -4,10 +4,9 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 public record RequestSendMoney(
-        @NotEmpty(message = "Receiver ID is required.") UUID receiverId,
+        @NotNull(message = "Receiver ID is required.") UUID receiverId,
         @NotNull(message = "Amount is required.") @DecimalMin(value = "10.0", message = "Amount must be at least 10.") BigDecimal amount) {
 }

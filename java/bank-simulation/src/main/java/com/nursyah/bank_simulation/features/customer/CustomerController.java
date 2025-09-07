@@ -33,7 +33,7 @@ public class CustomerController {
     }
 
     @GetMapping("/transaction")
-    public CompletableFuture<ResponseEntity<ResponsePaginated<ResponseTransaction>>> viewMyTransactions(@RequestParam RequestPaginated request) {
+    public CompletableFuture<ResponseEntity<ResponsePaginated<ResponseTransaction>>> viewMyTransactions(@ModelAttribute RequestPaginated request) {
         return customerService.viewMyTransactionsAsync(request).thenApply(ResponseEntity::ok);
     }
 }
