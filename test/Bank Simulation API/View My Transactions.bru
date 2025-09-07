@@ -1,0 +1,18 @@
+meta {
+  name: View My Transactions
+  type: http
+  seq: 13
+}
+
+get {
+  url: {{baseUrl}}/customer/transaction
+  body: none
+  auth: inherit
+}
+
+params:query {
+  ~search: 
+  ~page: 
+  ~sort: 
+  ~type: 
+}

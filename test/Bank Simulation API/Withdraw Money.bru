@@ -1,0 +1,17 @@
+meta {
+  name: Withdraw Money
+  type: http
+  seq: 12
+}
+
+post {
+  url: {{baseUrl}}/customer/withdrawal
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "amount": ""
+  }
+}

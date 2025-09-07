@@ -1,0 +1,17 @@
+meta {
+  name: View Customers
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{baseUrl}}/admin/customer
+  body: none
+  auth: inherit
+}
+
+params:query {
+  ~search: 
+  ~page: 
+  ~sort: 
+}

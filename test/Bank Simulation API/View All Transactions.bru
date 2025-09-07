@@ -1,0 +1,18 @@
+meta {
+  name: View All Transactions
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{baseUrl}}/admin/transaction
+  body: none
+  auth: inherit
+}
+
+params:query {
+  ~search: 
+  ~page: 
+  ~sort: 
+  ~type: 
+}

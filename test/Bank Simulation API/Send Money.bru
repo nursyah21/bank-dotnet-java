@@ -1,0 +1,18 @@
+meta {
+  name: Send Money
+  type: http
+  seq: 11
+}
+
+post {
+  url: {{baseUrl}}/customer/send
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "receiver_id": "",
+    "amount": ""
+  }
+}
