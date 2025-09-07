@@ -1,4 +1,4 @@
-package com.example.bank_simulation;
+package com.nursyah.bank_simulation;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,4 +1,4 @@
-package com.example.bank_simulation;
+package com.nursyah.bank_simulation;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
