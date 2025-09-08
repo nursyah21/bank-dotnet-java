@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.nursyah</groupId>
-	<artifactId>bank-simulation</artifactId>
+	<artifactId>bank_simulation</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>bank-simulation</name>
+	<name>bank_simulation</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>

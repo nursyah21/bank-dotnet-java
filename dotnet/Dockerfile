@@ -1,0 +1,19 @@
+# Stage 1: Build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
+WORKDIR /app
+
+COPY ["bank_simulation.sln", "dotnet/"]
+COPY ["bank_simulation/bank_simulation.csproj", "dotnet/bank_simulation/"]
+COPY ["bank_simulation_test/bank_simulation_test.csproj", "dotnet/bank_simulation_test/"]
+WORKDIR /app/dotnet
+RUN dotnet restore
+
+COPY . /app/dotnet/
+
+RUN dotnet publish -c Release
+
+ENV ASPNETCORE_URLS="http://*:5035"
+
+EXPOSE 5035
+
+ENTRYPOINT ["dotnet", "bank_simulation/bin/Release/net8.0/bank_simulation.dll"]

@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\bank-simulation\bank-simulation.csproj" />
+    <ProjectReference Include="..\bank_simulation\bank_simulation.csproj" />
   </ItemGroup>
 
 </Project>
