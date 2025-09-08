@@ -9,8 +9,8 @@ export function getPassword(password: string): string {
     return hashSync(password, 10)
 }
 
-export const primarySql = postgres('postgres://postgres:password@localhost:5432/bank_simulation_dev_dotnet')
-export const auditSql = postgres('postgres://postgres:password@localhost:5433/bank_simulation_audit_dev_dotnet')
+export const primarySql = postgres('postgres://postgres:password@localhost:5432/bank_simulation_dev')
+export const auditSql = postgres('postgres://postgres:password@localhost:5433/bank_simulation_audit_dev')
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)

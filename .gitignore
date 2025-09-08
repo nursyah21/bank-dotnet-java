@@ -9,7 +9,9 @@ backup_audit.sql
 backup_primary.sql
 
 bin/
-*.sln
+# *.sln
 obj/
 
 postman-collection
+
+.vscode

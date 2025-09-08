@@ -5,7 +5,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: bank_simulation_dev_dotnet
+      POSTGRES_DB: bank_simulation_dev
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -17,7 +17,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: bank_simulation_audit_dev_dotnet
+      POSTGRES_DB: bank_simulation_audit_dev
     volumes:
       - postgres_data_audit:/var/lib/postgresql/data
     ports:

@@ -1,0 +1,38 @@
+name: Build and Test .NET
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'dotnet/**'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - 'dotnet/**'
+  workflow_dispatch: 
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.413'
+
+    - name: Restore dependencies
+      run: dotnet restore
+      working-directory: ./dotnet/
+
+    - name: Build
+      run: dotnet build --no-restore
+      working-directory: ./dotnet/
+
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+      working-directory: ./dotnet/
