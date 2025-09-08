@@ -3,9 +3,13 @@ name: Build and Test .NET
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - 'dotnet/**'
   pull_request:
     branches: [ "main" ]
-  workflow_dispatch:  
+    paths:
+      - 'dotnet/**'
+  workflow_dispatch: 
 
 jobs:
   build-and-test:
@@ -23,9 +27,12 @@ jobs:
 
     - name: Restore dependencies
       run: dotnet restore
+      working-directory: ./dotnet/
 
     - name: Build
       run: dotnet build --no-restore
+      working-directory: ./dotnet/
 
     - name: Test
       run: dotnet test --no-build --verbosity normal
+      working-directory: ./dotnet/
