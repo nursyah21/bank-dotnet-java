@@ -1,14 +1,15 @@
-# Stage 1: Build
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
 WORKDIR /app
 
-COPY ["bank_simulation.sln", "dotnet/"]
-COPY ["bank_simulation/bank_simulation.csproj", "dotnet/bank_simulation/"]
-COPY ["bank_simulation_test/bank_simulation_test.csproj", "dotnet/bank_simulation_test/"]
-WORKDIR /app/dotnet
+COPY bank_simulation.sln .
+COPY bank_simulation/bank_simulation.csproj bank_simulation/
+COPY bank_simulation_test/bank_simulation_test.csproj bank_simulation_test/
+
+COPY . .
+
 RUN dotnet restore
 
-COPY . /app/dotnet/
+RUN dotnet test
 
 RUN dotnet publish -c Release
 

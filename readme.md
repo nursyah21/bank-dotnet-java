@@ -10,7 +10,7 @@ Here’s a quick overview of the key decisions behind the project:
 
 - **Dotnet:** The backend uses Dotnet, a robust alternative to Java, widely adopted in enterprise settings.  
 - **Java:** The backend also offers a Java Spring Boot implementation Java 17 + Spring Boot 3.4.9 its chosen for its Long-Term Support.  
-- **React:** The frontend uses React, a popular and efficient UI library. We chose React Router v7 in framework mode to avoid vendor lock-in and leverage the benefits of Client-Side Rendering (CSR) for better performance.  
+- **React:** The frontend uses React, a popular and efficient UI library. We chose React Router v7 in framework mode to avoid vendor lock-in.  
 - **PostgreSQL:** Chosen for its reliability and strong support for write-heavy operations, which are crucial for a banking system.  
 - **Modular Architecture:** The folder structure is feature-based, promoting team collaboration and maintainability.  
 - **Test-Driven Development (TDD):** This methodology was used throughout development to ensure an error-free and stable application.  
@@ -61,8 +61,7 @@ The application was built with a strong focus on security, implementing multiple
 - **Logging For Mutation Actions:** For compliance audit.  
 
 ## Frontend / UI
-
-- **Use Client Side Rendering:** Because this app didn’t need SEO, client-side rendering is preferred for better performance.  
+ 
 - **Built with shadcn/ui Components**: The interface leverages accessible and customizable components from shadcn/ui.
 
 ## Architecture
