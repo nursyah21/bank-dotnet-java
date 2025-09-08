@@ -1,4 +1,4 @@
-name: Build and Test .NET
+name: Build and Test Java
 
 on:
   push:
@@ -20,19 +20,17 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+    - name: Setup JDK 17
+      uses: actions/setup-java@v4
       with:
-        dotnet-version: '8.0.413'
-
-    - name: Restore dependencies
-      run: dotnet restore
-      working-directory: ./dotnet/
+        java-version: '17'
+        distribution: 'corretto'
+        cache: 'maven'
 
     - name: Build
-      run: dotnet build -c Release
-      working-directory: ./dotnet/
+      run: mvn clean install -DskipTests
+      working-directory: ./java/bank_simulation
 
     - name: Test
-      run: dotnet test
-      working-directory: ./dotnet/
+      run: mvn test
+      working-directory: ./java/bank_simulation
