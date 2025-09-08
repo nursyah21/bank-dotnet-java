@@ -9,6 +9,8 @@ COPY . .
 
 RUN npm install
 
+RUN npm run lint
+
 RUN npm run build
 
 EXPOSE 3000

@@ -28,6 +28,10 @@ jobs:
       - name: Install dependencies
         run: npm install
         working-directory: ./frontend
+
+      - name: Linter
+        run: npm run lint
+        working-directory: ./frontend
         
       - name: Build project
         run: npm run build
