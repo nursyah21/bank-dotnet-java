@@ -2,15 +2,19 @@
 
 This project showcases a secure, scalable, and fully-featured banking application. It demonstrates extensive skills across the entire software development lifecycle, from full-stack development to DevOps. It was built with a strong emphasis on clean code, stability, and modern enterprise practices.
 
+## Quick Start
+
+## Screenshots
+
 ## Motivation
 
 While this is a basic bank simulation, its core functionality (Auth + CRUD) is built to enterprise standards. Instead of focusing on a multitude of haphazard features, this project prioritizes stability and clean code qualities highly valued by companies. The backend and frontend are tightly integrated via OpenAPI contracts, with SDKs auto-generated to ensure type safety and reduce manual API handling.
 
 Here’s a quick overview of the key decisions behind the project:
 
-- **Dotnet:** The backend uses Dotnet, a robust alternative to Java, widely adopted in enterprise settings.  
+- **Dotnet:** The backend uses Dotnet, a robust alternative to Java, widely adopted in enterprise settings.  Q
 - **Java:** The backend also offers a Java Spring Boot implementation Java 17 + Spring Boot 3.4.9 its chosen for its Long-Term Support.  
-- **React:** The frontend uses React, a popular and efficient UI library. We chose React Router v7 in framework mode to avoid vendor lock-in.  
+- **React:** The frontend uses React with NextJS as a framework for frontend.
 - **PostgreSQL:** Chosen for its reliability and strong support for write-heavy operations, which are crucial for a banking system.  
 - **Modular Architecture:** The folder structure is feature-based, promoting team collaboration and maintainability.  
 - **Test-Driven Development (TDD):** This methodology was used throughout development to ensure an error-free and stable application.  
@@ -19,11 +23,11 @@ Here’s a quick overview of the key decisions behind the project:
 ## Tech Stack
 
 - **Backend:**  
-  - Dotnet 8 + EF Core (reverse engineering from PostgreSQL schema)  
-  - Java 17 + Spring Boot 3.4.9 (mirroring the Dotnet implementation)  
-- **Frontend:** React + React Router V7 (Framework Mode)  
+  - Dotnet 8 + EF Core
+  - Java 17 + Spring Boot 3.4.9
+- **Frontend:** React with NextJS 
 - **Database:** PostgreSQL  
-- **API Contract:** OpenAPI Spec
+- **API Contract:** OpenAPI 3.0
 - **Containerization:** Docker  
 - **Load Testing:** K6  
 - **CI/CD:** GitHub Actions  

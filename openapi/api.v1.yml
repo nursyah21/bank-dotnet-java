@@ -488,7 +488,7 @@ paths:
   /admin/customer:
     get:
       summary: View Customers
-      description: View customers with filtering, sorting, and pagination.
+      description: View customers with sorting, and pagination.
       security:
         - cookieAuth: []
       parameters:
