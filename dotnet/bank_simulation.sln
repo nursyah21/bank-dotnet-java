@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bank-simulation", "bank-simulation\bank-simulation.csproj", "{2A12D9AF-815F-418A-B653-7849D8D4FD08}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bank-simulation-test", "bank-simulation-test\bank-simulation-test.csproj", "{2A8D2EF8-6A6A-4A48-9887-AA4C393E0318}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2A12D9AF-815F-418A-B653-7849D8D4FD08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A12D9AF-815F-418A-B653-7849D8D4FD08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A12D9AF-815F-418A-B653-7849D8D4FD08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A12D9AF-815F-418A-B653-7849D8D4FD08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A8D2EF8-6A6A-4A48-9887-AA4C393E0318}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A8D2EF8-6A6A-4A48-9887-AA4C393E0318}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A8D2EF8-6A6A-4A48-9887-AA4C393E0318}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A8D2EF8-6A6A-4A48-9887-AA4C393E0318}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
