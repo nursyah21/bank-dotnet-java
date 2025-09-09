@@ -8,12 +8,12 @@ This project showcases a secure, scalable, and fully-featured banking applicatio
 
 ## Motivation
 
-While this is a basic bank simulation, its core functionality (Auth + CRUD) is built to enterprise standards. Instead of focusing on a multitude of haphazard features, this project prioritizes stability and clean code qualities highly valued by companies. The backend and frontend are tightly integrated via OpenAPI contracts, with SDKs auto-generated to ensure type safety and reduce manual API handling.
+While this is a basic bank simulation, its core functionality (Auth + CRUD) is built to enterprise standards. Instead of focusing on a multitude of haphazard features, this project prioritizes stability and clean code qualities highly valued by companies. The backend and frontend are tightly integrated via OpenAPI contracts.
 
 Here’s a quick overview of the key decisions behind the project:
 
-- **Dotnet:** The backend uses Dotnet, a robust alternative to Java, widely adopted in enterprise settings.  Q
-- **Java:** The backend also offers a Java Spring Boot implementation Java 17 + Spring Boot 3.4.9 its chosen for its Long-Term Support.  
+- **Dotnet:** The backend uses Dotnet, a robust alternative to Java, widely adopted in enterprise settings. 
+- **Java:** The backend use Spring Boot, as a standard backend for finance enterprise.  
 - **React:** The frontend uses React with NextJS as a framework for frontend.
 - **PostgreSQL:** Chosen for its reliability and strong support for write-heavy operations, which are crucial for a banking system.  
 - **Modular Architecture:** The folder structure is feature-based, promoting team collaboration and maintainability.  
@@ -42,12 +42,14 @@ Here’s a quick overview of the key decisions behind the project:
 
 - **Customer Management (Role: Customer)**  
   - **Funds Transfer:** Send money to another customer (minimum transfer: 10).  
-  - **Withdrawal:** Withdraw money from an account (minimum withdrawal: 10).  
-  - **Transaction History:** View transactions with search feature, pagination (25 items per page), sorting by created at, and filtering by type.  
+  - **Withdrawal:** Withdraw money from an account.  
+  - **Transaction History:** View transactions with search, pagination, sorting and filter.  
 
 - **Admin Management (Role: Admin)**  
-  - **Customer & Transaction Viewing:** View customer profiles and transactions with search feature, pagination (500 items per page), and sorting.  
-  - **Funds Management:** Top up customer balances (minimum: 10).  
+  - **Customer & Transaction Viewing:** View customer and transactions with search, pagination, sorting and fiter.
+  - **Funds Management:** Top up customer balances.
+
+For complete specification read [openapi](./openapi/api.v1.yml)  
 
 ## Security
 
