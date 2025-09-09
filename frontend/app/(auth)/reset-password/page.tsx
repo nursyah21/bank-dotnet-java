@@ -1,14 +1,27 @@
 import { Metadata } from "next";
 import { ResetPasswordForm } from "./reset-password-form";
+import { UpdatePasswordForm } from "./update-password-form";
 
 export const metadata: Metadata = {
   title: "Reset Password",
 };
 
-export default function ResetPassword() {
+interface ResetPasswordProps {
+  searchParams: {
+    token_reset_password?: string;
+  };
+}
+
+export default function ResetPassword({ searchParams }: ResetPasswordProps) {
+  const { token_reset_password } = searchParams;
+
   return (
     <>
-      <ResetPasswordForm />
+      {token_reset_password ? (
+        <UpdatePasswordForm token={token_reset_password} />
+      ) : (
+        <ResetPasswordForm />
+      )}
     </>
   );
 }

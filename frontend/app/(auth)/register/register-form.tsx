@@ -23,11 +23,16 @@ const registerSchema = z.object({
     .min(4, { message: "Username must be at least 4 characters long." }),
   email: z
     .string()
-    .email({ message: "Invalid email address." }),
-  birth_date: z.string().date({ message: "Invalid date format." }),
+    .regex(/^[^@\s]+@[^@\s]+$/, { message: "Invalid email address." }),
+  birth_date: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, { message: "Invalid date format." }),
   password: z
     .string()
-    .min(8, { message: "Password must be at least 8 characters long." }),
+    .min(8, { message: "Password must be at least 8 characters long." })
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, {
+      message: "Password must contain at least one lowercase letter, one uppercase letter, one number, and one symbol (@, $, !, %, *, ?, &)."
+    }),
   confirm_password: z.string()
 }).refine((data) => data.password === data.confirm_password, {
   message: "Passwords do not match.",
@@ -54,6 +59,8 @@ export function RegisterForm({
     setErrorMessage(null);
 
     try {
+      console.log(data)
+      return
       const response = await fetch('/api/register', {
         method: 'POST',
         headers: {

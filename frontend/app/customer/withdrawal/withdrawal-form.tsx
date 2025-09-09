@@ -3,64 +3,65 @@
 import { Button } from "@/components/ui/button"
 import {
   Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle
+  CardContent
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
-import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
-const resetPasswordSchema = z.object({
-  email: z
-    .string()
-    .regex(/^[^@\s]+@[^@\s]+$/, { message: "Invalid email address." }),
+const withdrawalSchema = z.object({
+  amount: z
+    .number()
+    .min(10, {
+      message: "Minimum withdrawal amount is 10.",
+    })
 });
 
-type ResetPasswordFormInputs = z.infer<typeof resetPasswordSchema>
+type WithdrawalFormInputs = z.infer<typeof withdrawalSchema>
 
-export function ResetPasswordForm({
+export function WithdrawalForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const router = useRouter()
-  
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<ResetPasswordFormInputs>({
-    resolver: zodResolver(resetPasswordSchema)
+  } = useForm<WithdrawalFormInputs>({
+    resolver: zodResolver(withdrawalSchema),
   })
 
-  const onSubmit = async (data: ResetPasswordFormInputs) => {
+  const onSubmit = async (data: WithdrawalFormInputs) => {
     setErrorMessage(null);
 
     try {
-      const response = await fetch('/api/reset-password', {
+      const response = await fetch('/api/customer/withdrawal', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email: data.email }),
+        body: JSON.stringify({
+          amount: data.amount,
+        }),
       });
 
+      const result = await response.json();
+
       if (response.ok) {
-        router.push("/login?success=reset-email-sent");
+        console.log("Withdrawal successful!", result);
+        router.push("/customer/transaction");
       } else {
-        const result = await response.json();
-        setErrorMessage(result.message || "Failed to send reset email. Please try again.");
+        setErrorMessage(result.message || "Withdrawal failed. Please try again.");
       }
     } catch (error) {
-      console.error("Reset password error:", error);
+      console.error("Withdrawal error:", error);
       setErrorMessage("An unexpected error occurred. Please try again.");
     }
   }
@@ -68,25 +69,19 @@ export function ResetPasswordForm({
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl">Reset your password</CardTitle>
-          <CardDescription>
-            Enter your email address to receive a reset link.
-          </CardDescription>
-        </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-3">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="amount">Amount</Label>
                 <Input
-                  id="email"
-                  type="email"
-                  placeholder="email@mail.com"
-                  {...register("email")}
+                  id="amount"
+                  type="number"
+                  placeholder="10"
+                  {...register("amount", { valueAsNumber: true })}
                 />
-                {errors.email && (
-                  <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+                {errors.amount && (
+                  <p className="text-red-500 text-sm mt-1">{errors.amount.message}</p>
                 )}
               </div>
               {errorMessage && (
@@ -94,14 +89,9 @@ export function ResetPasswordForm({
               )}
               <div className="flex flex-col gap-3">
                 <Button type="submit" className="w-full" disabled={isSubmitting}>
-                  {isSubmitting ? "Sending..." : "Send"}
+                  {isSubmitting ? "Withdrawal..." : "Withrawal"}
                 </Button>
               </div>
-            </div>
-            <div className="mt-4 text-center text-sm">
-              <Link href={"/login"} className="text-primary">
-                Back to login
-              </Link>
             </div>
           </form>
         </CardContent>

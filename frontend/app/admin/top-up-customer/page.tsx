@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { TopUpCustomerForm } from "./top-up-customer-form";
 
 export const metadata: Metadata = {
   title: "Top Up Customer",
@@ -6,6 +7,8 @@ export const metadata: Metadata = {
 
 export default function TopUpCustomer() {
   return (
-    <>Top Up Customer</>
+    <>
+      <TopUpCustomerForm />
+    </>
   );
 }

@@ -1,6 +1,8 @@
 import { Metadata } from "next";
 import { columns } from "./columns";
 import { DataTable } from "@/components/data-table";
+import { Suspense } from "react";
+import { Loading } from "@/components/loading";
 
 export const metadata: Metadata = {
   title: "Transaction",
@@ -8,7 +10,7 @@ export const metadata: Metadata = {
 
 async function getData() {
   const data = Array.from({ length: 10 }, () => ({
-    id: "1a85f64-5717-4562-b3fc-2c963f66afa6",
+    id: "31a85f64-5717-4562-b3fc-2c963f66afa6",
     type: "send",
     amount: Math.floor(Math.random() * (1000 - 10 + 1)) + 10,
     receiver_id: "2fa85f64-5717-4562-b3fc-2c963f66afa6",
@@ -28,21 +30,23 @@ async function getData() {
 export default async function CustomerTransaction() {
   const { data, total_items, total_pages } = await getData()
 
-  const filterOptions = ["all transaction","send", "receive", "withdrawal"];
+  const filterOptions = ["all transaction", "send", "receive", "withdrawal"];
   const rows_length = data.length;
   const search_placeholder = "Search transactions...";
 
   return (
     <>
-     <DataTable
-      columns={columns}
-      data={data}
-      total_items={total_items}
-      total_pages={total_pages}
-      rows_length={rows_length}
-      search_placeholder={search_placeholder}
-      filter_options={filterOptions}
-    />
+      <Suspense fallback={<Loading />}>
+        <DataTable
+          columns={columns}
+          data={data}
+          total_items={total_items}
+          total_pages={total_pages}
+          rows_length={rows_length}
+          search_placeholder={search_placeholder}
+          filter_options={filterOptions}
+        />
+      </Suspense>
     </>
   );
 }

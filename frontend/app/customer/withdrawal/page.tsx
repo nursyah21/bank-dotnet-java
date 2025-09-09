@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { WithdrawalForm } from "./withdrawal-form";
 
 export const metadata: Metadata = {
   title: "Withdrawal",
@@ -6,6 +7,8 @@ export const metadata: Metadata = {
 
 export default function Withdrawal() {
   return (
-    <>Withdrawal</>
+    <>
+      <WithdrawalForm />
+    </>
   );
 }

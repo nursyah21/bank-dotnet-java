@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { SendMoneyForm } from "./send-money-form";
 
 export const metadata: Metadata = {
   title: "Send Money",
@@ -6,6 +7,8 @@ export const metadata: Metadata = {
 
 export default function SendMoney() {
   return (
-    <>Send Money</>
+    <>
+      <SendMoneyForm />
+    </>
   );
 }

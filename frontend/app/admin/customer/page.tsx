@@ -1,6 +1,8 @@
 import { Metadata } from "next";
 import { columns } from "./columns";
 import { DataTable } from "@/components/data-table";
+import { Suspense } from "react";
+import { Loading } from "@/components/loading";
 
 export const metadata: Metadata = {
   title: "Transaction",
@@ -35,14 +37,16 @@ export default async function AdminCustomer() {
 
   return (
     <>
-     <DataTable
-      columns={columns}
-      data={data}
-      total_items={total_items}
-      total_pages={total_pages}
-      rows_length={rows_length}
-      search_placeholder={search_placeholder}
-    />
+      <Suspense fallback={<Loading />}>
+        <DataTable
+          columns={columns}
+          data={data}
+          total_items={total_items}
+          total_pages={total_pages}
+          rows_length={rows_length}
+          search_placeholder={search_placeholder}
+        />
+      </Suspense>
     </>
   );
 }
