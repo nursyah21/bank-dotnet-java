@@ -18,7 +18,7 @@ import { usePathname } from "next/navigation";
 const sidebarItems = [
   {
     title: "Transaction",
-    url: "/admin/transaction"
+    url: "/customer/transaction"
   },
   {
     title: "Send Money",
@@ -26,7 +26,7 @@ const sidebarItems = [
   },
   {
     title: "Withdrawal",
-    url: "/admin/withdrawal"
+    url: "/customer/withdrawal"
   },
 ]
 
