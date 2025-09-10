@@ -1,6 +1,7 @@
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using bank_simulation.Data.Contexts;
 using bank_simulation.Features.Admin;
 using bank_simulation.Features.Auth;
 using bank_simulation.Features.Auth.Validator;
@@ -10,8 +11,19 @@ using bank_simulation.Shared.Filter;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<PrimaryContext>(options =>
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("PrimaryConnection"));
+});
+
+builder.Services.AddDbContext<AuditContext>(options =>
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("AuditConnection"));
+});
 
 builder.Services.AddControllers(options =>
 {
