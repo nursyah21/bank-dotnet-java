@@ -36,3 +36,5 @@ jobs:
       - name: Build project
         run: npm run build
         working-directory: ./frontend
+        env:
+          BACKEND_URL: http://localhost:5035
